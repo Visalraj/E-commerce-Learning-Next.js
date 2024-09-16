@@ -25,7 +25,7 @@ export default function Loginform() {
                         <button type="submit" className="text-white bg-green-500 hover:bg-green-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-md px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800 ml-28 w-40 mt-4">
                             Login
                         </button>
-                        <p className="p-2">New User? Register <Link href={"/register"} className="hover:underline">here</Link></p>
+                        <p className="p-2">New User? Register <Link href="/register" className="hover:underline">here</Link></p>
                     </div>
                 </div>
             </form>
