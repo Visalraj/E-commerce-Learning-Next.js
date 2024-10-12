@@ -1,5 +1,5 @@
 
-import Breadcrumbs from '@/app/ui/admin/invoices/breadcrumbs';
+import Breadcrumbs from '@/app/ui/admin/components/breadcrumbs';
 import { CreateButton } from '@/app/ui/admin/dashboard/buttons';
 export default function Page() {
 
@@ -8,7 +8,7 @@ export default function Page() {
             <main>
                 <Breadcrumbs
                     breadcrumbs={[
-                        { label: 'Customers', href: '/admin/customers' },
+                        { label: 'Customers', href: '' },
                         {
                             label: 'Manage Customers',
                             href: '/admin/customers',
@@ -17,7 +17,8 @@ export default function Page() {
                     ]}
                 />
                 <div className='parentwrapbtns flex'>
-                    <CreateButton name={'Create Customers'} />
+
+                    <CreateButton name={'Create Customers'} pointto={'/admin/customers/create'} />
                     {/*<CreateButton name={'Manage Customers'} />*/}
                 </div>
             </main >
