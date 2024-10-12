@@ -9,13 +9,21 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@coreui/coreui": "^5.1.2",
+    "@coreui/coreui-pro": "^5.5.0",
+    "@coreui/react": "^5.4.0",
+    "@coreui/react-pro": "^5.7.0",
     "@heroicons/react": "^2.1.5",
     "@nextui-org/button": "^2.0.38",
     "@nextui-org/react": "^2.4.7",
+    "bootstrap": "^5.3.3",
+    "mongodb": "^6.9.0",
     "next": "15.0.0-canary.186",
     "react": "^18",
     "react-bootstrap": "^2.10.5",
-    "react-dom": "^18"
+    "react-dom": "^18",
+    "react-loader-spinner": "^6.1.6",
+    "zod": "^3.23.8"
   },
   "devDependencies": {
     "@types/node": "^20",

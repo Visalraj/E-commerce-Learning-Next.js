@@ -1,5 +1,7 @@
-import { PencilIcon, PlusIcon, TrashIcon } from '@heroicons/react/24/outline';
+import { PlusIcon } from '@heroicons/react/24/outline';
 import Link from 'next/link';
+
+import clsx from 'clsx';
 
 export function CreateButton({ name, pointto }: { name: string, pointto: string }) {
     return (
@@ -15,10 +17,28 @@ export function CreateButton({ name, pointto }: { name: string, pointto: string 
     );
 }
 
-export function ActionButtons({ name }: { name: string }) {
+export function ActionButtons({ name, isclicked }: { name: string, isclicked: boolean }) {
     return (
-        <input type="button"
-            className="hover:cursor-pointer flex h-10 items-center rounded-lg bg-blue-600 text-white px-4 text-sm font-medium  transition-colors" value={name}
-        />
+        <>
+            <div className="flex items-center">
+                <input
+                    type="submit"
+                    className={clsx(
+                        "hover:cursor-pointer flex h-10 items-center rounded-lg bg-blue-600 text-white px-4 text-sm font-medium transition-colors",
+                        {
+                            'pr-8': isclicked,
+                            'bg-blue-400 cursor-not-allowed': isclicked
+                        }
+                    )}
+                    value={name}
+                    disabled={isclicked}
+                />
+                {isclicked && (
+                    <div className="spinner-border spinner-border-sm -ml-6 text-white" role="status">
+                        <span className="sr-only">Loading...</span>
+                    </div>
+                )}
+            </div>
+        </>
     )
 }

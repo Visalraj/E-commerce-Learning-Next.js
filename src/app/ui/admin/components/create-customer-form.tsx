@@ -1,20 +1,30 @@
 
+'use client';
 import { ActionButtons } from "../dashboard/buttons";
 import Link from "next/link";
-
+import { createCustomers } from "@/app/lib/actions-admins";
+import { useState } from "react";
 export default function CustomerCreateForm() {
+    const [isClicked, setisClicked] = useState(false);
+    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+        const formData = new FormData(e.currentTarget);
+        setisClicked(true);
+        await createCustomers(formData);
+    }
+
 
     return (
-        <form >
+        <form onSubmit={handleSubmit} autoComplete="off" className="w-7/12 m-auto mt-5">
             <div className="rounded-md bg-gray-300 p-4 md:p-6 ">
-                <div className="completeformwrapper p-5 ">
+                <div className="completeformwrapper p-5 " style={{ width: "130%" }}>
 
                     <div className="mb-4">
                         <label htmlFor="customer firstname" className="mb-2 block text-sm font-medium">
                             First Name
                         </label>
                         <div className="relative ">
-                            <input type="text" className="w-8/12 h-9 rounded-md focus:outline-none p-2" />
+                            <input type="text" name="firstname" className="w-8/12 h-9 rounded-md focus:outline-none p-2" />
                         </div>
                         <div id="customer-error" aria-live="polite" aria-atomic="true">
                         </div>
@@ -24,7 +34,7 @@ export default function CustomerCreateForm() {
                             Lastname
                         </label>
                         <div className="relative ">
-                            <input type="text" className="w-8/12 h-9 rounded-md focus:outline-none p-2" />
+                            <input type="text" name="lastname" className="w-8/12 h-9 rounded-md focus:outline-none p-2" />
                         </div>
                         <div id="customer-error" aria-live="polite" aria-atomic="true">
                         </div>
@@ -34,7 +44,7 @@ export default function CustomerCreateForm() {
                             Email
                         </label>
                         <div className="relative ">
-                            <input type="email" className="w-8/12 h-9 rounded-md focus:outline-none p-2" />
+                            <input type="email" name="email" className="w-8/12 h-9 rounded-md focus:outline-none p-2" />
                         </div>
                         <div id="customer-error" aria-live="polite" aria-atomic="true">
                         </div>
@@ -47,7 +57,7 @@ export default function CustomerCreateForm() {
                     >
                         Cancel
                     </Link>
-                    <ActionButtons name={'Create'} />
+                    <ActionButtons name={'Create'} isclicked={isClicked} />
                 </div>
             </div>
         </form>
