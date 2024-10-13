@@ -4,6 +4,8 @@ const connectDB = async () => {
         await mongoose.connect(process.env.MONGODB_URI!);
         return true;
     } catch (error) {
+
+
         console.log(error);
         return false;
     }
