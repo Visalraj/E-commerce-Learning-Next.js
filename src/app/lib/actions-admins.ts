@@ -33,7 +33,7 @@ export async function createCustomers(formdata: FormData) {
 
             try {
                 await Users.create({ firstname, lastname, email, username, password });
-                console.log('User created');
+                console.log('User created successfully');
             } catch (error) {
                 console.log('Unable to create user' + error);
             }
