@@ -27,7 +27,7 @@ export function ActionButtons({ name, isclicked }: { name: string, isclicked: bo
                         "hover:cursor-pointer flex h-10 items-center rounded-lg bg-blue-600 text-white px-4 text-sm font-medium transition-colors",
                         {
                             'pr-8': isclicked,
-                            'bg-blue-400 cursor-not-allowed': isclicked
+                            'bg-blue-300 cursor-not-allowed': isclicked
                         }
                     )}
                     value={name}

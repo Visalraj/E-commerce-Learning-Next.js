@@ -1,5 +1,6 @@
 'use server';
 import { z } from 'zod';
+import connectDB from '@/library/db';
 
 const FormSchema = z.object({
     id: z.string(),
@@ -18,8 +19,10 @@ export async function createCustomers(formdata: FormData) {
     };
 
     try {
-        const validatedData = CreateCustomers.parse(data);
-        console.log(validatedData);
+        if (await connectDB()) {
+            const validatedData = CreateCustomers.parse(data);
+            console.log(validatedData);
+        }
     } catch (e) {
         console.error('Validation Error:', e);
     }
