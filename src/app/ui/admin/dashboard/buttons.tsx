@@ -17,7 +17,7 @@ export function CreateButton({ name, pointto }: { name: string, pointto: string 
     );
 }
 
-export function ActionButtons({ name, isclicked }: { name: string, isclicked: boolean }) {
+export function ActionButtons({ name, isclicked = false }: { name: string, isclicked: boolean }) {
     return (
         <>
             <div className="flex items-center">

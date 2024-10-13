@@ -13,6 +13,6 @@ const usersSchema = new Schema(
     }
 );
 
-const Users = mongoose.models.Users || mongoose.model("Users", usersSchema);
+const Users = mongoose.models.users || mongoose.model("users", usersSchema);
 
 export default Users;

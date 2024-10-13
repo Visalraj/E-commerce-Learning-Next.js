@@ -1,6 +1,9 @@
 'use server';
 import { z } from 'zod';
 import connectDB from '@/library/db';
+import Users from '@/models/users';
+import { generateRandomString } from '../Helpers/function';
+import { encryptString, decryptString } from '../Helpers/function';
 
 const FormSchema = z.object({
     id: z.string(),
@@ -19,10 +22,24 @@ export async function createCustomers(formdata: FormData) {
     };
 
     try {
+
+        const validatedData = CreateCustomers.parse(data);
         if (await connectDB()) {
-            const validatedData = CreateCustomers.parse(data);
-            console.log(validatedData);
+            var firstname = validatedData.firstname;
+            var lastname = validatedData.lastname;
+            var email = (encryptString(validatedData.email));
+            var username = validatedData.firstname + validatedData.lastname;
+            var password = generateRandomString({ length: 10 });
+
+            try {
+                await Users.create({ firstname, lastname, email, username, password });
+                console.log('User created');
+            } catch (error) {
+                console.log('Unable to create user' + error);
+            }
+
         }
+
     } catch (e) {
         console.error('Validation Error:', e);
     }
