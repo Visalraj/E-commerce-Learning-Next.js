@@ -40,13 +40,15 @@ export async function createCustomers(formdata: FormData) {
                 console.log({ status: 200, message: 'User Created Successfully' });
                 return { status: 200, message: 'User Created Successfully' };
             } catch (error) {
-                console.log('Unable to create user' + error);
+                console.log({ status: 500, message: 'Unable to create user' });
+                return { status: 500, message: 'Unable to create user' };
             }
 
         }
 
     } catch (e) {
-        console.error('Validation Error:', e);
+        console.log({ status: 400, message: 'Validation Error' });
+        return { status: 400, message: 'Validation Error' };
 
     }
 }
