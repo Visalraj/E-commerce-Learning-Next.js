@@ -5,7 +5,8 @@ import Users from '@/models/users';
 import { generateRandomString } from '../Helpers/function';
 import { encryptString, decryptString } from '../Helpers/function';
 import { revalidatePath } from 'next/cache';
-import { redirect } from 'next/navigation';
+import { Customer } from './definitions';
+
 
 const FormSchema = z.object({
     id: z.string(),
@@ -39,7 +40,6 @@ export async function createCustomers(formdata: FormData) {
             let username = firstname + lastname;
             let password = encryptString(generateRandomString({ length: 10 }));
 
-
             try {
                 await Users.create({ firstname, lastname, email, username, password });
                 revalidatePath('/admin/customers');
@@ -57,5 +57,30 @@ export async function createCustomers(formdata: FormData) {
     } catch (e) {
         console.error('Validation Error:', e);
         return { status: 400, message: 'Validation Error' };
+    }
+}
+
+export async function getCustomers() {
+    try {
+        const db = await connectDB();
+        if (db) {
+            const customers = await Users.find({});
+            if (customers.length >= 0) {
+                const serializedCustomers: Customer[] = customers.map(customer => ({
+                    _id: customer._id.toString(),
+                    firstname: customer.firstname,
+                    lastname: customer.lastname,
+                    email: customer.email,
+                    username: customer.username,
+                    password: customer.password,
+                    isActive: customer.isActive,
+                    createdAt: customer.createdAt.toISOString(),
+                    updatedAt: customer.updatedAt.toISOString(),
+                }));
+                return { status: '200', customers: serializedCustomers };
+            }
+        }
+    } catch (error) {
+
     }
 }

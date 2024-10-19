@@ -1,6 +1,7 @@
 
 import Breadcrumbs from '@/app/ui/admin/components/breadcrumbs';
 import { CreateButton } from '@/app/ui/admin/dashboard/buttons';
+import Customers from '@/app/ui/admin/components/customers-list';
 export default function Page() {
 
     return (
@@ -20,7 +21,9 @@ export default function Page() {
 
                     <CreateButton name={'Create Customers'} pointto={'/admin/customers/create'} />
                     {/*<CreateButton name={'Manage Customers'} />*/}
+
                 </div>
+                <Customers />
             </main >
         </>
     )
