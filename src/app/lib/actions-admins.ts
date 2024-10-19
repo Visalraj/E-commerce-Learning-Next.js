@@ -7,7 +7,6 @@ import { encryptString, decryptString } from '../Helpers/function';
 import { revalidatePath } from 'next/cache';
 import { Customer } from './definitions';
 
-
 const FormSchema = z.object({
     id: z.string(),
     firstname: z.string().min(1),
@@ -16,7 +15,6 @@ const FormSchema = z.object({
 });
 
 const CreateCustomers = FormSchema.omit({ id: true });
-
 
 export type State = {
     errors?: {
@@ -34,7 +32,6 @@ export async function createCustomers(formdata: FormData) {
             email: formdata.get('email'),
         });
 
-
         if (await connectDB()) {
             email = encryptString(email.toLowerCase());
             let username = firstname + lastname;
@@ -50,7 +47,6 @@ export async function createCustomers(formdata: FormData) {
                 return { status: 500, message: 'Unable to create user' };
             }
 
-
         } else {
             return { status: 500, message: 'Database Connection Failed' };
         }
@@ -64,7 +60,7 @@ export async function getCustomers() {
     try {
         const db = await connectDB();
         if (db) {
-            const customers = await Users.find({});
+            const customers = await Users.find({}).sort({ createdAt: -1 });
             if (customers.length >= 0) {
                 const serializedCustomers: Customer[] = customers.map(customer => ({
                     _id: customer._id.toString(),
@@ -78,9 +74,11 @@ export async function getCustomers() {
                     updatedAt: customer.updatedAt.toISOString(),
                 }));
                 return { status: '200', customers: serializedCustomers };
+            } else {
+                return { status: '200', customers: [] };
             }
         }
     } catch (error) {
-
+        console.log('Something error occured', error);
     }
 }
