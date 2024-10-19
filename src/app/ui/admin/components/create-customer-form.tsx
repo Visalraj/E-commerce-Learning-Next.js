@@ -2,20 +2,31 @@
 'use client';
 import { ActionButtons } from "../dashboard/buttons";
 import Link from "next/link";
-import { createCustomers } from "@/app/lib/actions-admins";
+import { createCustomers, State } from "@/app/lib/actions-admins";
+import { useRouter } from 'next/navigation';
 import { useState } from "react";
+
 export default function CustomerCreateForm() {
-    const [isClicked, setisClicked] = useState(false);
-    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-        e.preventDefault();
-        const formData = new FormData(e.currentTarget);
-        setisClicked(true);
-        await createCustomers(formData);
+    const router = useRouter();
+    const [isClicked, setIsClicked] = useState(false);
+    const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+        event.preventDefault();
+        setIsClicked(true);
+        const formData = new FormData(event.currentTarget);
+
+        try {
+            const result = await createCustomers(formData);
+            if (result.status && result.status === 200 && result.redirectUrl != '') {
+                setIsClicked(false);
+                router.push(result.redirectUrl!);
+            }
+        } catch (error) {
+            console.log(error);
+        }
     }
 
-
     return (
-        <form onSubmit={handleSubmit} autoComplete="off" className="w-7/12 m-auto mt-5">
+        <form onSubmit={handleSubmit} method="POST" autoComplete="off" className="w-7/12 m-auto mt-5">
             <div className="rounded-md bg-gray-300 p-4 md:p-6 ">
                 <div className="completeformwrapper p-5 " style={{ width: "130%" }}>
 
@@ -25,6 +36,7 @@ export default function CustomerCreateForm() {
                         </label>
                         <div className="relative ">
                             <input type="text" name="firstname" className="w-8/12 h-9 rounded-md focus:outline-none p-2" />
+                            <div id="customer-error" aria-live="polite" aria-atomic="true"></div>
                         </div>
                         <div id="customer-error" aria-live="polite" aria-atomic="true">
                         </div>

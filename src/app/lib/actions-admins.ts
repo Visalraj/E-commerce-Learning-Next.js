@@ -4,7 +4,8 @@ import connectDB from '@/library/db';
 import Users from '@/models/users';
 import { generateRandomString } from '../Helpers/function';
 import { encryptString, decryptString } from '../Helpers/function';
-import { NextResponse } from 'next/server';
+import { revalidatePath } from 'next/cache';
+import { redirect } from 'next/navigation';
 
 const FormSchema = z.object({
     id: z.string(),
@@ -15,40 +16,46 @@ const FormSchema = z.object({
 
 const CreateCustomers = FormSchema.omit({ id: true });
 
-export async function createCustomers(formdata: FormData) {
-    const data = {
-        firstname: formdata.get('firstname'),
-        lastname: formdata.get('lastname'),
-        email: formdata.get('email'),
+
+export type State = {
+    errors?: {
+
     };
+    message?: string | null;
+};
+
+export async function createCustomers(formdata: FormData) {
 
     try {
-
-        const validatedData = CreateCustomers.parse(data);
+        let { firstname, lastname, email } = CreateCustomers.parse({
+            firstname: formdata.get('firstname'),
+            lastname: formdata.get('lastname'),
+            email: formdata.get('email'),
+        });
 
 
         if (await connectDB()) {
-            const firstname = validatedData.firstname;
-            const lastname = validatedData.lastname;
+            email = encryptString(email.toLowerCase());
+            let username = firstname + lastname;
+            let password = encryptString(generateRandomString({ length: 10 }));
 
-            const email = encryptString((validatedData.email).toLowerCase());
-            const username = validatedData.firstname + validatedData.lastname;
-            const password = encryptString(generateRandomString({ length: 10 }));
 
             try {
                 await Users.create({ firstname, lastname, email, username, password });
-                console.log({ status: 200, message: 'User Created Successfully' });
-                return { status: 200, message: 'User Created Successfully' };
+                revalidatePath('/admin/customers');
+                return { status: 200, redirectUrl: process.env.dynamiclink + 'admin/customers/' }
+
             } catch (error) {
-                console.log({ status: 500, message: 'Unable to create user' });
+                console.log('Unable to create user:', error);
                 return { status: 500, message: 'Unable to create user' };
             }
 
+
+        } else {
+            return { status: 500, message: 'Database Connection Failed' };
         }
-
     } catch (e) {
-        console.log({ status: 400, message: 'Validation Error' });
+        console.error('Validation Error:', e);
         return { status: 400, message: 'Validation Error' };
-
     }
 }

@@ -26,7 +26,7 @@ export function ActionButtons({ name, isclicked = false }: { name: string, iscli
                     className={clsx(
                         "hover:cursor-pointer flex h-10 items-center rounded-lg bg-blue-600 text-white px-4 text-sm font-medium transition-colors",
                         {
-                            'pr-8 bg-blue-200 cursor-not-allowed': isclicked,
+                            'pr-8 bg-blue-300 cursor-not-allowed': isclicked,
 
                         }
                     )}
