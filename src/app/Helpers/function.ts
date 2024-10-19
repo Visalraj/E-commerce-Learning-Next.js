@@ -30,3 +30,27 @@ export function decryptString(encryptedData: string) {
     decrypted = Buffer.concat([decrypted, decipher.final()]);
     return decrypted.toString();
 }
+
+export function formatTime(time: string) {
+    const mongoDate = new Date(time);
+
+    const day = mongoDate.getDate();
+    const month = mongoDate.getMonth() + 1;
+    const year = mongoDate.getFullYear();
+    const hours = mongoDate.getUTCHours();
+    const minutes = mongoDate.getUTCMinutes();
+    const seconds = mongoDate.getUTCSeconds();
+
+
+    const formattedDate = `${day.toString().padStart(2, '0')}/${month.toString().padStart(2, '0')}/${year}`;
+
+
+    const formattedTime = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+
+    const formattedDateTime = `${formattedDate} ${formattedTime}`;
+
+    return formattedDateTime;
+}
+
+
+
