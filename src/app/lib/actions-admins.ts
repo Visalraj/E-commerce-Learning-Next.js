@@ -2,8 +2,8 @@
 import { z } from 'zod';
 import connectDB from '@/library/db';
 import Users from '@/models/users';
-import { generateRandomString } from '../Helpers/function';
-import { encryptString } from '../Helpers/function';
+import { decryptString, generateRandomString } from '../Helpers/function';
+import { encryptString, formatTime } from '../Helpers/function';
 import { revalidatePath } from 'next/cache';
 import { Customer } from './definitions';
 
@@ -16,22 +16,24 @@ const FormSchema = z.object({
 
 const CreateCustomers = FormSchema.omit({ id: true });
 
+
+
 export async function createCustomers(formdata: FormData) {
 
     try {
-        const { firstname, lastname } = CreateCustomers.parse({
+        const { firstname, lastname, email: rawEmail } = CreateCustomers.parse({
             firstname: formdata.get('firstname'),
             lastname: formdata.get('lastname'),
             email: formdata.get('email'),
         });
-        let { email } = CreateCustomers.parse({
-            email: formdata.get('email'),
-        });
 
+        let email;
         if (await connectDB()) {
-            email = encryptString(email.toLowerCase());
+            email = encryptString(rawEmail.toLowerCase());
+
             const username = firstname + lastname;
             const password = encryptString(generateRandomString({ length: 10 }));
+
 
             try {
                 await Users.create({ firstname, lastname, email, username, password });
@@ -62,16 +64,16 @@ export async function getCustomers() {
                     _id: customer._id.toString(),
                     firstname: customer.firstname,
                     lastname: customer.lastname,
-                    email: customer.email,
+                    email: decryptString(customer.email),
                     username: customer.username,
                     password: customer.password,
                     isActive: customer.isActive,
-                    createdAt: customer.createdAt.toISOString(),
+                    createdAt: formatTime(customer.createdAt.toISOString()),
                     updatedAt: customer.updatedAt.toISOString(),
                 }));
-                return { status: '200', customers: serializedCustomers };
+                return { status: 200, customers: serializedCustomers };
             } else {
-                return { status: '200', customers: [] };
+                return { status: 200, customers: [] };
             }
         }
     } catch (error) {

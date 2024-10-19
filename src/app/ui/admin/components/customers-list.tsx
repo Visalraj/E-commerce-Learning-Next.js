@@ -1,4 +1,5 @@
 import { getCustomers } from "@/app/lib/actions-admins";
+import Icon from "../../common/svg-tiles";
 export default async function Customers() {
     const response = await getCustomers();
     return (
@@ -19,17 +20,18 @@ export default async function Customers() {
                                         Username
                                     </th>
                                     <th scope="col" className="px-3 py-5 font-medium">
+                                        Email
+                                    </th>
+                                    <th scope="col" className="px-3 py-5 font-medium">
                                         Status
                                     </th>
                                     <th scope="col" className="px-3 py-5 font-medium">
                                         Created Date
                                     </th>
                                     <th scope="col" className="px-3 py-5 font-medium">
-                                        Edit
+                                        Action
                                     </th>
-                                    <th scope="col" className="px-3 py-5 font-medium">
-                                        Delete
-                                    </th>
+
                                     <th scope="col" className="px-3 py-5 font-medium">
                                         Login
                                     </th>
@@ -39,7 +41,7 @@ export default async function Customers() {
                                 {
                                     response && response.customers && response.customers.map((user) =>
                                         <>
-                                            <tr className="w-full border-b py-3 text-sm last-of-type:border-none [&:first-child>td:first-child]:rounded-tl-lg [&:first-child>td:last-child]:rounded-tr-lg [&:last-child>td:first-child]:rounded-bl-lg [&:last-child>td:last-child]:rounded-br-lg " >
+                                            <tr key={user._id} className="w-full border-b py-3 text-sm last-of-type:border-none [&:first-child>td:first-child]:rounded-tl-lg [&:first-child>td:last-child]:rounded-tr-lg [&:last-child>td:first-child]:rounded-bl-lg [&:last-child>td:last-child]:rounded-br-lg " >
                                                 <td className="w-fit whitespace-nowrap py-3 pl-6 pr-3">
                                                     {user._id}
                                                 </td>
@@ -50,23 +52,25 @@ export default async function Customers() {
                                                     {user.username}
                                                 </td>
                                                 <td className="whitespace-nowrap px-3 py-3">
-                                                    {(user.isActive) ? <><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="size-6">
-                                                        <path strokeLinecap="round" strokeLinejoin="round" d="m4.5 12.75 6 6 9-13.5" style={{ color: "#5abf5a;" }}></path>
-                                                    </svg></> : <><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="size-6">
-                                                        <path strokeLinecap="round" strokeLinejoin="round" d="M6 18 18 6M6 6l12 12" style={{ color: "red" }}></path>
-                                                    </svg></>}
+                                                    {user.email}
+                                                </td>
+                                                <td className="whitespace-nowrap px-3 py-3">
+                                                    {(user.isActive) ? <Icon name="activestatus" /> : <Icon name="inactivestatus" />}
                                                 </td>
                                                 <td className="whitespace-nowrap px-3 py-3">
                                                     {user.createdAt}
                                                 </td>
-                                                <td className="whitespace-nowrap px-3 py-3">
-                                                    edit
+                                                <td className="whitespace-nowrap px-3 py-3 flex ">
+                                                    <span className="pl-3">
+                                                        <Icon name="edit" />
+                                                    </span>
+                                                    <span className="pl-3">
+                                                        <Icon name="delete" />
+                                                    </span>
                                                 </td>
+
                                                 <td className="whitespace-nowrap px-3 py-3">
-                                                    delete
-                                                </td>
-                                                <td className="whitespace-nowrap px-3 py-3">
-                                                    login
+                                                    <Icon name="loginbyadmin" />
                                                 </td>
                                             </tr>
                                         </>
