@@ -1,5 +1,6 @@
 import { getCustomers } from "@/app/lib/actions-admins";
 import Icon from "../../common/svg-tiles";
+import { ActionButtons } from "../dashboard/buttons";
 export default async function Customers() {
     const response = await getCustomers();
     return (
@@ -40,40 +41,38 @@ export default async function Customers() {
                             <tbody className="bg-white">
                                 {
                                     response && response.customers && response.customers.map((user) =>
-                                        <>
-                                            <tr key={user._id} className="w-full border-b py-3 text-sm last-of-type:border-none [&:first-child>td:first-child]:rounded-tl-lg [&:first-child>td:last-child]:rounded-tr-lg [&:last-child>td:first-child]:rounded-bl-lg [&:last-child>td:last-child]:rounded-br-lg " >
-                                                <td className="w-fit whitespace-nowrap py-3 pl-6 pr-3">
-                                                    {user._id}
-                                                </td>
-                                                <td className="whitespace-nowrap px-3 py-3">
-                                                    {user.firstname + ' ' + user.lastname}
-                                                </td>
-                                                <td className="whitespace-nowrap px-3 py-3">
-                                                    {user.username}
-                                                </td>
-                                                <td className="whitespace-nowrap px-3 py-3">
-                                                    {user.email}
-                                                </td>
-                                                <td className="whitespace-nowrap px-3 py-3">
-                                                    {(user.isActive) ? <Icon name="activestatus" /> : <Icon name="inactivestatus" />}
-                                                </td>
-                                                <td className="whitespace-nowrap px-3 py-3">
-                                                    {user.createdAt}
-                                                </td>
-                                                <td className="whitespace-nowrap px-3 py-3 flex ">
-                                                    <span className="pl-3">
-                                                        <Icon name="edit" />
-                                                    </span>
-                                                    <span className="pl-3">
-                                                        <Icon name="delete" />
-                                                    </span>
-                                                </td>
+                                        <tr key={user._id} className="w-full border-b py-3 text-sm last-of-type:border-none [&:first-child>td:first-child]:rounded-tl-lg [&:first-child>td:last-child]:rounded-tr-lg [&:last-child>td:first-child]:rounded-bl-lg [&:last-child>td:last-child]:rounded-br-lg " >
+                                            <td className="w-fit whitespace-nowrap py-3 pl-6 pr-3">
+                                                {user._id}
+                                            </td>
+                                            <td className="whitespace-nowrap px-3 py-3">
+                                                {user.firstname + ' ' + user.lastname}
+                                            </td>
+                                            <td className="whitespace-nowrap px-3 py-3">
+                                                {user.username}
+                                            </td>
+                                            <td className="whitespace-nowrap px-3 py-3">
+                                                {user.email}
+                                            </td>
+                                            <td className="whitespace-nowrap px-3 py-3">
+                                                {(user.isActive) ? <Icon name="activestatus" /> : <Icon name="inactivestatus" />}
+                                            </td>
+                                            <td className="whitespace-nowrap px-3 py-3">
+                                                {user.createdAt}
+                                            </td>
+                                            <td className="whitespace-nowrap px-3 py-3 flex ">
+                                                <span className="pl-3">
+                                                    <ActionButtons name={'Edit'} isclicked={false} pointo={user._id} />
+                                                </span>
+                                                <span className="pl-3">
+                                                    <Icon name="delete" />
+                                                </span>
+                                            </td>
 
-                                                <td className="whitespace-nowrap px-3 py-3">
-                                                    <Icon name="loginbyadmin" />
-                                                </td>
-                                            </tr>
-                                        </>
+                                            <td className="whitespace-nowrap px-3 py-3">
+                                                <Icon name="loginbyadmin" />
+                                            </td>
+                                        </tr>
                                     )
                                 }
                             </tbody>
