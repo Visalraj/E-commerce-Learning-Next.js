@@ -13,7 +13,7 @@ export function CreateButton({ name, pointto }: { name: string, pointto: string 
 }
 
 export function ActionButtons({ name, isclicked = false, pointo = '' }: { name: string, isclicked: boolean, pointo: string }) {
-    const buttonNames = ['Create', 'Edit'];
+    const buttonNames = ['Create', 'Edit', 'Update'];
     type ButtonName = typeof buttonNames[number];
 
     const button: Record<ButtonName, JSX.Element> = {
@@ -41,7 +41,20 @@ export function ActionButtons({ name, isclicked = false, pointo = '' }: { name: 
             <Link href={`${process.env.dynamiclink}admin/customers/${pointo}/edit`}>
                 <Icon name="edit" />
             </Link>
-        )
+        ),
+        Update: (
+            <div className="flex items-center">
+                <input
+                    type="submit"
+                    className={clsx(
+                        "hover:cursor-pointer flex h-10 items-center rounded-lg bg-blue-600 text-white px-4 text-sm font-medium transition-colors",
+
+                    )}
+                    value={name}
+                />
+
+            </div>
+        ),
     };
     return button[name];
 }

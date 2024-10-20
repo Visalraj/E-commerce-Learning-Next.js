@@ -2,19 +2,28 @@
 import { z } from 'zod';
 import connectDB from '@/library/db';
 import Users from '@/models/users';
-import { decryptString, generateRandomString } from '../Helpers/function';
-import { encryptString, formatTime } from '../Helpers/function';
+import { decryptString, generateRandomString, encryptString, formatTime } from '../Helpers/function';
 import { revalidatePath } from 'next/cache';
 import { Customer } from './definitions';
+import mongoose from "mongoose";
+import { redirect } from 'next/navigation'
+
+
+enum Status {
+    active = 'Active',
+    inactive = 'Inactive',
+}
 
 const FormSchema = z.object({
     id: z.string(),
     firstname: z.string().min(1),
     lastname: z.string().min(1),
-    email: z.string().email().min(1)
+    username: z.string().min(1),
+    email: z.string().email().min(1),
+    status: z.enum([Status.active, Status.inactive]),
 });
 
-const CreateCustomers = FormSchema.omit({ id: true });
+const CreateCustomers = FormSchema.omit({ id: true, status: true, username: true });
 
 
 
@@ -78,5 +87,58 @@ export async function getCustomers() {
         }
     } catch (error) {
         console.log('Something error occured', error);
+    }
+}
+
+const UpdateCustomerSchema = FormSchema.omit({ id: true, firstname: true, email: true, lastname: true });
+
+export async function updateCustomerById(id: string, formData: FormData) {
+    const objectId = new mongoose.Types.ObjectId(id);
+    const { username, status } = UpdateCustomerSchema.parse({
+        username: formData.get('username'),
+        status: formData.get('status'),
+    })
+
+    if (await connectDB()) {
+        const result = await Users.updateOne(
+            { _id: objectId },
+            {
+                $set: {
+                    username: username,
+                    isActive: (status == 'Active') ? true : false,
+                    updatedAt: new Date(),
+                }
+            }
+        );
+
+
+        if (result.modifiedCount > 0) {
+            console.log('User updated successfully');
+            revalidatePath('/admin/customers');
+            redirect('/admin/customers');
+        } else {
+            console.log('No user was updated.');
+        }
+    }
+
+}
+export async function getCustomerById({ id }: { id: string }) {
+    const objectId = new mongoose.Types.ObjectId(id);
+    const customerObject = await Users.find({ _id: objectId });
+    if (customerObject.length >= 0) {
+        console.log('User Fetched');
+        const serializedCustomer: Customer[] = customerObject.map(customer => ({
+            _id: customer._id.toString(),
+            firstname: customer.firstname,
+            lastname: customer.lastname,
+            email: decryptString(customer.email),
+            username: customer.username,
+            password: customer.password,
+            isActive: customer.isActive,
+            createdAt: formatTime(customer.createdAt.toISOString()),
+            updatedAt: customer.updatedAt.toISOString(),
+        }));
+
+        return { status: 200, data: serializedCustomer };
     }
 }
