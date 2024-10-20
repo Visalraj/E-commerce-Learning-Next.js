@@ -1,5 +1,11 @@
-import Breadcrumbs from "@/app/ui/admin/components/breadcrumbs"
-export default function editCustomer() {
+import Breadcrumbs from "@/app/ui/admin/components/breadcrumbs";
+import EditCustomerForm from "@/app/ui/admin/components/edit-customer-form";
+import { getCustomerById } from "@/app/lib/actions-admins";
+
+export default async function editCustomer({ params }: { params: Promise<{ id: string }> }) {
+    const { id } = await params;
+    const customer = await getCustomerById({ id });
+
     return (
         <main>
             <Breadcrumbs
@@ -12,7 +18,10 @@ export default function editCustomer() {
                     },
                 ]}
             />
-
+            {
+                customer ? <EditCustomerForm uuid={id} customer={customer.data} /> : ''
+            }
         </main>
-    )
+    );
 }
+
