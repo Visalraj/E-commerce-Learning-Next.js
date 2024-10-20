@@ -1,22 +1,23 @@
 import { PlusIcon } from '@heroicons/react/24/outline';
 import Link from 'next/link';
-
 import clsx from 'clsx';
+import Icon from '../../common/svg-tiles';
 
 export function CreateButton({ name, pointto }: { name: string, pointto: string }) {
     return (
-
         <Link href={pointto} className="flex h-10 items-center rounded-lg bg-blue-600 px-4 text-sm font-medium text-white transition-colors hover:bg-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 w-fit ml-3">
             <span className="hidden md:block">{name}</span>{' '}
             <PlusIcon className="h-5 md:ml-4" />
         </Link>
-
     );
 }
 
-export function ActionButtons({ name, isclicked = false }: { name: string, isclicked: boolean }) {
-    return (
-        <>
+export function ActionButtons({ name, isclicked = false, pointo = '' }: { name: string, isclicked: boolean, pointo: string }) {
+    const buttonNames = ['Create', 'Edit'];
+    type ButtonName = typeof buttonNames[number];
+
+    const button: Record<ButtonName, JSX.Element> = {
+        Create: (
             <div className="flex items-center">
                 <input
                     type="submit"
@@ -24,7 +25,6 @@ export function ActionButtons({ name, isclicked = false }: { name: string, iscli
                         "hover:cursor-pointer flex h-10 items-center rounded-lg bg-blue-600 text-white px-4 text-sm font-medium transition-colors",
                         {
                             'pr-8 bg-blue-300 cursor-not-allowed': isclicked,
-
                         }
                     )}
                     value={name}
@@ -36,6 +36,12 @@ export function ActionButtons({ name, isclicked = false }: { name: string, iscli
                     </div>
                 )}
             </div>
-        </>
-    )
+        ),
+        Edit: (
+            <Link href={`${process.env.dynamiclink}admin/customers/${pointo}/edit`}>
+                <Icon name="edit" />
+            </Link>
+        )
+    };
+    return button[name];
 }
