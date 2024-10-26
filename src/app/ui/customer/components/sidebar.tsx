@@ -1,7 +1,19 @@
-'use server';
+'use client';
+
+import Link from 'next/link';
+import { usePathname } from 'next/navigation';
+import clsx from 'clsx';
 import Image from "next/image";
 import Icon from "../../common/svg-tiles";
-export default async function CustomerSideBar() {
+
+const links = [
+    { name: 'Home', href: '/dashboard' },
+    { name: 'Wishlist', href: '/wishlist' },
+    { name: 'SignOut', href: '' },
+];
+
+export default function CustomerSideBar() {
+    const pathname = usePathname();
     return (
         <>
             <nav className="fixed top-0 z-50 w-full bg-white border-b border-gray-200 dark:bg-gray-800 dark:border-gray-700">
@@ -9,7 +21,7 @@ export default async function CustomerSideBar() {
                     <div className="flex items-center justify-between">
                         <div className="flex items-center justify-start rtl:justify-end">
                             <a href="https://flowbite.com" className="flex ms-2 md:me-24">
-                                <span className="self-center text-xl font-semibold sm:text-2xl whitespace-nowrap dark:text-white">Flowbite</span>
+                                <span className="self-center text-xl font-semibold sm:text-2xl whitespace-nowrap dark:text-white">Insta Mart</span>
                             </a>
                         </div>
                         <div className="flex items-center">
@@ -30,12 +42,27 @@ export default async function CustomerSideBar() {
             <aside id="logo-sidebar" className="fixed top-0 left-0 z-40 w-64 h-screen pt-20 transition-transform -translate-x-full bg-white border-r border-gray-200 sm:translate-x-0 dark:bg-gray-800 dark:border-gray-700" aria-label="Sidebar">
                 <div className="h-full px-3 pb-4 overflow-y-auto bg-white dark:bg-gray-800">
                     <ul className="space-y-2 font-medium">
-                        <li>
-                            <a href="#" className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
-                                <Icon name={"Home"} />
-                                <span className="ms-3">Dashboard</span>
-                            </a>
-                        </li>
+                        {
+                            links.map((link) => {
+                                let isActive = false;
+                                if (link.href === '/dashboard') {
+                                    isActive = pathname === '/dashboard';
+                                }
+                                return (
+                                    <li key={link.name}>
+                                        <a href="#" className={clsx("flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group",
+                                            {
+                                                "bg-gray-100": isActive
+                                            }
+                                        )}>
+                                            <Icon name={link.name} />
+                                            <span className="ms-3 pt-1">{link.name}</span>
+                                        </a>
+                                    </li>
+                                )
+                            })
+                        }
+
                     </ul>
                 </div>
             </aside>
