@@ -52,7 +52,6 @@ export function ActionButtons({ name, isclicked = false, pointo = '' }: { name: 
                     )}
                     value={name}
                 />
-
             </div>
         ),
     };

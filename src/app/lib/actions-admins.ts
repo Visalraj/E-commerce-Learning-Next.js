@@ -63,7 +63,7 @@ export async function createCustomers(formdata: FormData) {
     }
 }
 
-export async function getCustomers() {
+export async function getCustomers(): Promise<{ status: number; customers: Customer[] } | undefined> {
     try {
         const db = await connectDB();
         if (db) {
@@ -84,6 +84,8 @@ export async function getCustomers() {
             } else {
                 return { status: 200, customers: [] };
             }
+        } else {
+            return { status: 500, customers: [] };
         }
     } catch (error) {
         console.log('Something error occured', error);
@@ -140,5 +142,17 @@ export async function getCustomerById({ id }: { id: string }) {
         }));
 
         return { status: 200, data: serializedCustomer };
+    }
+}
+
+export async function deleteCustomerById(id: string) {
+    const customerId = new mongoose.Types.ObjectId(id);
+    try {
+        if (await connectDB()) {
+            await Users.deleteOne({ _id: customerId });
+            revalidatePath('/admin/customers');
+        }
+    } catch (error) {
+        console.log('error on deleting customer: ' + error);
     }
 }
