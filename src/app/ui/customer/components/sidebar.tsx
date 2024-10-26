@@ -50,14 +50,14 @@ export default function CustomerSideBar() {
                                 }
                                 return (
                                     <li key={link.name}>
-                                        <a href="#" className={clsx("flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group",
+                                        <Link href={link.href} className={clsx("flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group",
                                             {
                                                 "bg-gray-100": isActive
                                             }
                                         )}>
                                             <Icon name={link.name} />
                                             <span className="ms-3 pt-1">{link.name}</span>
-                                        </a>
+                                        </Link>
                                     </li>
                                 )
                             })
