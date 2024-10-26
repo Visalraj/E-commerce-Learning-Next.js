@@ -1,3 +1,4 @@
+'use server';
 import { clsx } from 'clsx';
 import Link from 'next/link';
 import { lusitana } from '@/app/ui/fonts';
@@ -8,7 +9,7 @@ interface Breadcrumb {
     active?: boolean;
 }
 
-export default function Breadcrumbs({
+export default async function Breadcrumbs({
     breadcrumbs,
 }: {
     breadcrumbs: Breadcrumb[];

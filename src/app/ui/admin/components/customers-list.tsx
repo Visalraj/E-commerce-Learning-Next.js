@@ -1,6 +1,7 @@
+'use server';
 import { getCustomers } from "@/app/lib/actions-admins";
 import Icon from "../../common/svg-tiles";
-import { ActionButtons } from "../dashboard/buttons";
+import { ActionButtons } from "./buttons";
 import DeleteCustomer from "./delete-customer";
 export default async function Customers() {
     const response = await getCustomers();

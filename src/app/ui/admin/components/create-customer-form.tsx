@@ -1,6 +1,6 @@
 
 'use client';
-import { ActionButtons } from "../dashboard/buttons";
+import { ActionButtons } from "./buttons";
 import Link from "next/link";
 import { createCustomers } from "@/app/lib/actions-admins";
 import { useRouter } from 'next/navigation';

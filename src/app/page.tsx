@@ -1,7 +1,8 @@
+'use server';
 import Navbar from "./ui/Home/navbar";
 
-export default function Home() {
+export default async function Home() {
   return (
-    	<Navbar/>
+    <Navbar />
   );
 }

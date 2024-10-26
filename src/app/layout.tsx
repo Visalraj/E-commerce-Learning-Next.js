@@ -5,22 +5,18 @@ import "./globals.css";
 
 
 export const metadata: Metadata = {
-  title: "Insta Mart",
-  description: "E-commerce application",
+	title: "Insta Mart",
+	description: "E-commerce application",
 };
 
-export default function RootLayout({
-  children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
-  return (
-    <html lang="en">
-      <body
-        className={""}
-      >
-        {children}
-      </body>
-    </html>
-  );
+export default function RootLayout({ children, }: Readonly<{ children: React.ReactNode; }>) {
+	return (
+		<html lang="en">
+			<body className={""}>
+
+				{children}
+
+			</body>
+		</html>
+	);
 }

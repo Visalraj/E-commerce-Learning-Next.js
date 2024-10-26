@@ -1,3 +1,4 @@
+'use server';
 import Breadcrumbs from "@/app/ui/admin/components/breadcrumbs";
 import EditCustomerForm from "@/app/ui/admin/components/edit-customer-form";
 import { getCustomerById } from "@/app/lib/actions-admins";

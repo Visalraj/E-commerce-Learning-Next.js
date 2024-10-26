@@ -1,6 +1,8 @@
+'use server';
 import * as NodeCrypto from 'crypto';
+import { auth } from "../auth"
 
-export function generateRandomString({ length }: { length: number }) {
+export async function generateRandomString({ length }: { length: number }) {
     let result = '';
     const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
     const charactersLength = characters.length;
@@ -16,14 +18,14 @@ const algorithm = 'aes-256-cbc';
 const key = '0123456789abcdef0123456789abcdef';
 const constantIV = Buffer.from('1234567890abcdef');
 
-export function encryptString(text: string) {
+export async function encryptString(text: string) {
     const cipher = NodeCrypto.createCipheriv(algorithm, Buffer.from(key), constantIV);
     let encrypted = cipher.update(text, 'utf8');
     encrypted = Buffer.concat([encrypted, cipher.final()]);
     return encrypted.toString('hex');
 }
 
-export function decryptString(encryptedData: string) {
+export async function decryptString(encryptedData: string) {
     const encryptedBuffer = Buffer.from(encryptedData, 'hex');
     const decipher = NodeCrypto.createDecipheriv(algorithm, Buffer.from(key), constantIV);
     let decrypted = decipher.update(encryptedBuffer);
@@ -31,7 +33,7 @@ export function decryptString(encryptedData: string) {
     return decrypted.toString();
 }
 
-export function formatTime(time: string) {
+export async function formatTime(time: string) {
     const mongoDate = new Date(time);
 
     const day = mongoDate.getDate();
@@ -51,6 +53,10 @@ export function formatTime(time: string) {
 
     return formattedDateTime;
 }
-
+export async function isUserLoggedIn() {
+    const session = await auth();
+    if (!session?.user) return null;
+    return session.user;
+}
 
 

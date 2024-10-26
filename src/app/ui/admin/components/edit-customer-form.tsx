@@ -1,8 +1,9 @@
+'use server';
 import { updateCustomerById } from "@/app/lib/actions-admins";
-import { ActionButtons } from "../dashboard/buttons";
+import { ActionButtons } from "./buttons";
 import { Customer } from "@/app/lib/definitions";
 
-export default function EditCustomerForm({ uuid, customer }: { uuid: string; customer: Customer[] }) {
+export default async function EditCustomerForm({ uuid, customer }: { uuid: string; customer: Customer[] }) {
     const updateCustomerWithId = updateCustomerById.bind(null, uuid);
 
     return (
