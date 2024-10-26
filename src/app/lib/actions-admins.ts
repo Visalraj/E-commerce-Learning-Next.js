@@ -153,6 +153,6 @@ export async function deleteCustomerById(id: string) {
             revalidatePath('/admin/customers');
         }
     } catch (error) {
-        console.log('error on deleting customer: ' + error);
+        console.log('error on deleting customer: ' + error)
     }
 }
