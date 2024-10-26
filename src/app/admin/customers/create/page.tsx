@@ -1,6 +1,7 @@
+'use server';
 import Breadcrumbs from '@/app/ui/admin/components/breadcrumbs';
 import CustomerCreateForm from '@/app/ui/admin/components/create-customer-form';
-export default function Page() {
+export default async function Page() {
     return (
         <main>
             <Breadcrumbs

@@ -8,6 +8,7 @@ import Users from '@/models/users';
 import { encryptString } from '@/app/Helpers/function';
 
 export type User = NextAuthUser & {
+    _id: string;
     username: string;
     password: string;
 }
@@ -15,7 +16,7 @@ export type User = NextAuthUser & {
 async function getUser(email: string, password: string): Promise<User | undefined> {
     try {
         if (await connectDB()) {
-            const User = await Users.findOne({ email: encryptString(email), password: encryptString(password) });
+            const User = await Users.findOne({ email: await encryptString(email), password: await encryptString(password) });
             console.log("User found:", User);
             return User;
         }
@@ -28,17 +29,26 @@ export const { auth, signIn, signOut } = NextAuth({
     ...authConfig,
     providers: [Credentials({
         async authorize(credentials): Promise<User | null> {
-            const parsedCredentials = z
-                .object({ email: z.string().email(), password: z.string().min(6) })
-                .safeParse(credentials);
-            if (parsedCredentials.success) {
-                const { email, password } = parsedCredentials.data;
-                const user = await getUser(email, password);
-                if (user) {
-                    return { ...user, name: user.username, email, id: "unique-id" };
+            try {
+                const parsedCredentials = z
+                    .object({ email: z.string().email(), password: z.string().min(6) })
+                    .safeParse(credentials);
+                if (parsedCredentials.success) {
+                    const { email, password } = parsedCredentials.data;
+                    const user = await getUser(email, password);
+                    if (user) {
+                        return { ...user, name: user.username, email: await encryptString(email) };
+                    } else {
+                        console.log('Failed to find user');
+                        return null;
+                    }
                 }
+            } catch (error) {
+                console.log(error)
             }
             return null;
         },
+
     })],
+
 });

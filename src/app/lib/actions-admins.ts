@@ -6,7 +6,7 @@ import { decryptString, generateRandomString, encryptString, formatTime } from '
 import { revalidatePath } from 'next/cache';
 import { Customer } from './definitions';
 import mongoose from "mongoose";
-import { redirect } from 'next/navigation'
+import { redirect } from 'next/navigation';
 
 
 enum Status {
@@ -28,7 +28,6 @@ const CreateCustomers = FormSchema.omit({ id: true, status: true, username: true
 
 
 export async function createCustomers(formdata: FormData) {
-
     try {
         const { firstname, lastname, email: rawEmail } = CreateCustomers.parse({
             firstname: formdata.get('firstname'),
@@ -38,10 +37,10 @@ export async function createCustomers(formdata: FormData) {
 
         let email;
         if (await connectDB()) {
-            email = encryptString(rawEmail.toLowerCase());
+            email = await encryptString(rawEmail.toLowerCase());
 
             const username = firstname + lastname;
-            const password = encryptString(generateRandomString({ length: 10 }));
+            const password = await encryptString(await generateRandomString({ length: 10 }));
 
 
             try {
@@ -69,17 +68,17 @@ export async function getCustomers(): Promise<{ status: number; customers: Custo
         if (db) {
             const customers = await Users.find({}).sort({ createdAt: -1 });
             if (customers.length >= 0) {
-                const serializedCustomers: Customer[] = customers.map(customer => ({
+                const serializedCustomers: Customer[] = await Promise.all(customers.map(async customer => ({
                     _id: customer._id.toString(),
                     firstname: customer.firstname,
                     lastname: customer.lastname,
-                    email: decryptString(customer.email),
+                    email: await decryptString(customer.email),
                     username: customer.username,
                     password: customer.password,
                     isActive: customer.isActive,
-                    createdAt: formatTime(customer.createdAt.toISOString()),
+                    createdAt: await formatTime(customer.createdAt.toISOString()),
                     updatedAt: customer.updatedAt.toISOString(),
-                }));
+                })));
                 return { status: 200, customers: serializedCustomers };
             } else {
                 return { status: 200, customers: [] };
@@ -113,7 +112,6 @@ export async function updateCustomerById(id: string, formData: FormData) {
             }
         );
 
-
         if (result.modifiedCount > 0) {
             console.log('User updated successfully');
             revalidatePath('/admin/customers');
@@ -129,21 +127,24 @@ export async function getCustomerById({ id }: { id: string }) {
     const customerObject = await Users.find({ _id: objectId });
     if (customerObject.length >= 0) {
         console.log('User Fetched');
-        const serializedCustomer: Customer[] = customerObject.map(customer => ({
-            _id: customer._id.toString(),
-            firstname: customer.firstname,
-            lastname: customer.lastname,
-            email: decryptString(customer.email),
-            username: customer.username,
-            password: customer.password,
-            isActive: customer.isActive,
-            createdAt: formatTime(customer.createdAt.toISOString()),
-            updatedAt: customer.updatedAt.toISOString(),
-        }));
+        const serializedCustomer: Customer[] = await Promise.all(
+            customerObject.map(async customer => ({
+                _id: customer._id.toString(),
+                firstname: customer.firstname,
+                lastname: customer.lastname,
+                email: await decryptString(customer.email),
+                username: customer.username,
+                password: customer.password,
+                isActive: customer.isActive,
+                createdAt: await formatTime(customer.createdAt.toISOString()),
+                updatedAt: customer.updatedAt.toISOString(),
+            }))
+        );
 
         return { status: 200, data: serializedCustomer };
     }
 }
+
 
 export async function deleteCustomerById(id: string) {
     const customerId = new mongoose.Types.ObjectId(id);

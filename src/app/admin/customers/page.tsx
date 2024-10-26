@@ -1,8 +1,9 @@
 
+'use server';
 import Breadcrumbs from '@/app/ui/admin/components/breadcrumbs';
-import { CreateButton } from '@/app/ui/admin/dashboard/buttons';
+import { CreateButton } from '@/app/ui/admin/components/buttons';
 import Customers from '@/app/ui/admin/components/customers-list';
-export default function Page() {
+export default async function Page() {
 
     return (
         <>
