@@ -10,7 +10,13 @@ const nextConfig = {
         ]
     },
     images: {
-        domains: ['flowbite.com'],
+        remotePatterns: [
+            {
+                protocol: 'https',
+                hostname: 'flowbite.com',
+                pathname: '**',
+            },
+        ],
     },
 
 };

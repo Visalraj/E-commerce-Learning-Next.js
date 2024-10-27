@@ -1,5 +1,5 @@
 'use server'
-import SideNav from '@/app/ui/admin/dashboard/sidenav';
+import SideNav from '@/app/ui/admin/components/sidenav';
 
 
 export default async function Layout({ children }: { children: React.ReactNode }) {
