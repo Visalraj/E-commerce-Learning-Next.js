@@ -1,6 +1,5 @@
 import { signOut } from "@/app/auth";
-import { getToken } from "next-auth/jwt"; // Import the necessary JWT function
-import { redirect } from "next/navigation";
+import { getToken } from "next-auth/jwt";
 import { NextResponse } from "next/server";
 
 export async function POST(request: Request): Promise<Response> {

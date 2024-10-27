@@ -9,7 +9,7 @@ export default function MyAccount() {
         e.preventDefault();
         console.log('Logging out...');
         try {
-            const response = await fetch('/api/actions', {
+            await fetch('/api/actions', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
