@@ -5,14 +5,17 @@ export async function middleware(request: NextRequest) {
     console.log('Login request comes');
     const token = await getToken({ req: request, secret: process.env.AUTH_SECRET });
 
-    if (token) {
-        return NextResponse.redirect(new URL('/dashboard', request.url));
+    const isLoginPage = request.nextUrl.pathname === '/login';
+    const isDashboardPage = request.nextUrl.pathname === '/dashboard';
+
+    if ((token && isLoginPage) || (!token && isDashboardPage)) {
+        const redirectUrl = token ? '/dashboard' : '/login';
+        return NextResponse.redirect(new URL(redirectUrl, request.url));
     }
 
-    console.log('User is not logged in');
     return NextResponse.next();
 }
 
 export const config = {
-    matcher: ['/login']
+    matcher: ['/login', '/dashboard']
 }
