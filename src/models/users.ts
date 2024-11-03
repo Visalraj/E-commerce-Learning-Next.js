@@ -3,6 +3,7 @@ const usersSchema = new Schema(
     {
         firstname: { type: String },
         lastname: { type: String },
+        age: { type: Number },
         email: { type: String },
         username: { type: String },
         password: { type: String },
