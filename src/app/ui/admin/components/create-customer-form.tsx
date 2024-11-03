@@ -69,7 +69,7 @@ export default function CustomerCreateForm() {
                     >
                         Cancel
                     </Link>
-                    <ActionButtons name={'Create'} isclicked={isClicked} pointo="" />
+                    <ActionButtons name={'Create'} isclicked={isClicked} pointto="" />
                 </div>
             </div>
         </form>

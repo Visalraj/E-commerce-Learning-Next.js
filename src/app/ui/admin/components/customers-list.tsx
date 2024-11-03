@@ -66,7 +66,7 @@ export default async function Customers() {
                                                     </td>
                                                     <td className="whitespace-nowrap px-3 py-3 flex ">
                                                         <span className="pl-3">
-                                                            <ActionButtons name={'Edit'} isclicked={false} pointo={user._id} />
+                                                            <ActionButtons name={'Edit'} isclicked={false} pointto={user._id} />
                                                         </span>
                                                         <span className="pl-3">
                                                             <DeleteCustomer id={user._id} />

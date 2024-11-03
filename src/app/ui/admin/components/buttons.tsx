@@ -13,7 +13,7 @@ export function CreateButton({ name, pointto }: { name: string, pointto: string 
     );
 }
 
-export function ActionButtons({ name, isclicked = false, pointo = '' }: { name: string, isclicked: boolean, pointo: string }) {
+export function ActionButtons({ name, isclicked = false, pointto = '' }: { name: string, isclicked: boolean, pointto: string }) {
     const buttonNames = ['Create', 'Edit', 'Update'];
     type ButtonName = typeof buttonNames[number];
 
@@ -39,7 +39,7 @@ export function ActionButtons({ name, isclicked = false, pointo = '' }: { name: 
             </div>
         ),
         Edit: (
-            <Link href={`${process.env.dynamiclink}admin/customers/${pointo}/edit`}>
+            <Link href={`${process.env.dynamiclink}admin/customers/${pointto}/edit`}>
                 <Icon name="edit" />
             </Link>
         ),
