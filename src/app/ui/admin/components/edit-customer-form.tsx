@@ -52,7 +52,7 @@ export default async function EditCustomerForm({ uuid, customer }: { uuid: strin
                             </select>
                         </div>
                         <div className="input-form mb-4">
-                            <ActionButtons name="Update" isclicked={false} pointo="" />
+                            <ActionButtons name="Update" isclicked={false} pointto="" />
                         </div>
                     </form>
                 </>

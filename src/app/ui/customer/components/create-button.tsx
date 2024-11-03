@@ -1,7 +1,7 @@
 'use client';
-import { CreateButton } from "../../admin/components/buttons";
+import { ActionButtons } from "../../admin/components/buttons";
 export const CreateButtonComponent = () => {
     return (
-        <CreateButton name={"Create"} pointto={''} />
+        <ActionButtons name={'Create'} pointto={''} isclicked={false} />
     )
 }
