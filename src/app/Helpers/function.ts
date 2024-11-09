@@ -1,6 +1,8 @@
 'use server';
 import * as NodeCrypto from 'crypto';
 import { auth } from "../auth"
+import connectDB from '@/library/db';
+import Users from '@/models/users';
 
 export async function generateRandomString({ length }: { length: number }) {
     let result = '';
@@ -59,4 +61,22 @@ export async function isUserLoggedIn() {
     return session.user;
 }
 
-
+export async function createUniqueUsername(name: string) {
+    try {
+        if (await connectDB()) {
+            if (name.trim() !== '') {
+                const Usernames = await Users.find({}, { "username": 1, "_id": 0 });
+                const usernameList = Usernames.map(user => (user.username).toLowerCase());
+                let uniqueUsername = name.toLowerCase();
+                let i = 1;
+                while (usernameList.includes(uniqueUsername)) {
+                    uniqueUsername = name + i;
+                    i++;
+                }
+                return uniqueUsername;
+            }
+        }
+    } catch (error) {
+        console.error('Error generating unique username:', error);
+    }
+}

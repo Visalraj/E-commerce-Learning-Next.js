@@ -4,7 +4,7 @@ import { signIn } from '../auth';
 import { AuthError } from 'next-auth';
 import { z } from 'zod';
 import Users from '@/models/users';
-import { encryptString } from '../Helpers/function';
+import { createUniqueUsername, encryptString } from '../Helpers/function';
 import { generateRandomString } from '../Helpers/function';
 
 export async function authenticate(
@@ -49,7 +49,7 @@ export async function createCustomer(formData: FormData) {
 
     const email = await encryptString(rawEmail as string);
     const password = await encryptString(await generateRandomString({ length: 10 }));
-    const username = customer_fname + customer_lname;
+    const username = await createUniqueUsername(customer_fname + customer_lname);
 
     try {
         if (await connectDB()) {

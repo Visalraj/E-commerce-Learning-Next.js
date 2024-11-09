@@ -2,7 +2,7 @@
 import { z } from 'zod';
 import connectDB from '@/library/db';
 import Users from '@/models/users';
-import { decryptString, generateRandomString, encryptString, formatTime } from '../Helpers/function';
+import { decryptString, generateRandomString, encryptString, formatTime, createUniqueUsername } from '../Helpers/function';
 import { revalidatePath } from 'next/cache';
 import { Customer } from './definitions';
 import mongoose from "mongoose";
@@ -39,7 +39,7 @@ export async function createCustomers(formdata: FormData) {
         if (await connectDB()) {
             email = await encryptString(rawEmail.toLowerCase());
 
-            const username = firstname + lastname;
+            const username = await createUniqueUsername(firstname + lastname);
             const password = await encryptString(await generateRandomString({ length: 10 }));
 
 
