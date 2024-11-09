@@ -7,8 +7,6 @@ import Users from '@/models/users';
 import { encryptString } from '../Helpers/function';
 import { generateRandomString } from '../Helpers/function';
 
-
-
 export async function authenticate(
     prevState: string | undefined,
     formData: FormData,
