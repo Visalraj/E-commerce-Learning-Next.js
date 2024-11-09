@@ -3,6 +3,9 @@ import connectDB from '@/library/db';
 import { signIn } from '../auth';
 import { AuthError } from 'next-auth';
 import { z } from 'zod';
+import Users from '@/models/users';
+import { encryptString } from '../Helpers/function';
+import { generateRandomString } from '../Helpers/function';
 
 export async function authenticate(
     prevState: string | undefined,
@@ -44,11 +47,18 @@ export async function createCustomer(formData: FormData) {
         customer_addr: formData.get('customer_addr'),
     });
 
-    console.log(customer_fname + ' ' + customer_lname + ' ' + customer_age + ' ' + rawEmail + ' ' + customer_addr);
+    let email = await encryptString(rawEmail);
+    let password = await encryptString(await generateRandomString({ length: 10 }));
+    let username = customer_fname + customer_lname;
+
     try {
         if (await connectDB()) {
             try {
-
+                Users.create({
+                    firstname: customer_fname, lastname: customer_lname, age: customer_age,
+                    email: email, password: password, address: customer_addr, isActive: false, username: username
+                });
+                console.log('User created successfully')
             } catch (error) {
                 console.log('User is not created ' + error);
             }
