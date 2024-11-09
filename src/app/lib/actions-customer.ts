@@ -7,6 +7,8 @@ import Users from '@/models/users';
 import { encryptString } from '../Helpers/function';
 import { generateRandomString } from '../Helpers/function';
 
+
+
 export async function authenticate(
     prevState: string | undefined,
     formData: FormData,
@@ -47,24 +49,29 @@ export async function createCustomer(formData: FormData) {
         customer_addr: formData.get('customer_addr'),
     });
 
-    let email = await encryptString(rawEmail);
-    let password = await encryptString(await generateRandomString({ length: 10 }));
-    let username = customer_fname + customer_lname;
+    const email = await encryptString(rawEmail as string);
+    const password = await encryptString(await generateRandomString({ length: 10 }));
+    const username = customer_fname + customer_lname;
 
     try {
         if (await connectDB()) {
-            try {
-                Users.create({
-                    firstname: customer_fname, lastname: customer_lname, age: customer_age,
-                    email: email, password: password, address: customer_addr, isActive: false, username: username
-                });
-                console.log('User created successfully')
-            } catch (error) {
-                console.log('User is not created ' + error);
-            }
+            await Users.create({
+                firstname: customer_fname,
+                lastname: customer_lname,
+                age: customer_age,
+                email: email,
+                password: password,
+                address: customer_addr,
+                isActive: false,
+                username: username
+            });
+            console.log('User created successfully');
+            return { status: 200, redirectUrl: process.env.dynamiclink + 'login' }
+        } else {
+            return { status: 500, redirectUrl: `${process.env.dynamiclink}` };
         }
     } catch (error) {
-        console.log('Db connection error ' + error);
+        console.log('Error during user creation or DB connection:', error);
+        return { status: 500, redirectUrl: `${process.env.dynamiclink}` };
     }
-
 }
