@@ -7,7 +7,7 @@ import clsx from 'clsx';
 const links = [
 	{ name: 'Home', href: '/admin/dashboard' },
 	{ name: 'Customers', href: '/admin/customers' },
-
+	{ name: 'Products', href: '/admin/products' },
 ];
 
 export default function NavLinks() {
@@ -21,7 +21,10 @@ export default function NavLinks() {
 					isActive = pathname.startsWith('/admin/customers');
 				} else if (link.href === '/admin/dashboard') {
 					isActive = pathname === '/admin/dashboard';
+				} else if (link.href === '/admin/products') {
+					isActive = pathname.startsWith('/admin/products');
 				}
+
 
 				return (
 					<Link
