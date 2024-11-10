@@ -2,7 +2,8 @@
 import Breadcrumbs from '@/app/ui/admin/components/breadcrumbs';
 import { CreateButton } from '@/app/ui/admin/components/buttons';
 import Customers from '@/app/ui/admin/components/customers-list';
-
+import Pagination from '@/app/ui/common/pagination';
+import { getCustomers } from "@/app/lib/actions-admins";
 export default async function Page(
     props: {
         searchParams?: Promise<{
@@ -13,6 +14,9 @@ export default async function Page(
 ) {
     const searchParams = await props.searchParams;
     const query = (searchParams && searchParams.query) ? searchParams.query : '';
+    const currentPage = Number(searchParams?.page) || 1;
+    const response = await getCustomers(query, currentPage);
+    const totalPages = response?.totalPages || 0;
 
     return (
         <>
@@ -30,8 +34,12 @@ export default async function Page(
                 <div className="parentwrapbtns flex">
                     <CreateButton name="Create Customers" pointto="/admin/customers/create" />
                 </div>
-                <Customers query={query} />
+                <Customers response={response} />
+                <div className="mt-5 flex w-full justify-center">
+                    <Pagination totalPages={totalPages} />
+                </div>
             </main>
         </>
     );
 }
+
