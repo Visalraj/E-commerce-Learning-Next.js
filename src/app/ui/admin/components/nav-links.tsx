@@ -22,7 +22,7 @@ export default function NavLinks() {
 				} else if (link.href === '/admin/dashboard') {
 					isActive = pathname === '/admin/dashboard';
 				} else if (link.href === '/admin/products') {
-					isActive = pathname === '/admin/products';
+					isActive = pathname.startsWith('/admin/products');
 				}
 
 

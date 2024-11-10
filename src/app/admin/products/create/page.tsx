@@ -1,5 +1,6 @@
 'use server';
 import Breadcrumbs from "@/app/ui/admin/components/breadcrumbs";
+import ProductsCreateForm from "@/app/ui/admin/components/create-product-form";
 export default async function createProducts() {
     return (
         <>
@@ -13,6 +14,7 @@ export default async function createProducts() {
                     },
                 ]}
             />
+            <ProductsCreateForm />
         </>
     )
 }
