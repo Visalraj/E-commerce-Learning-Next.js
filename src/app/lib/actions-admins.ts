@@ -62,7 +62,8 @@ export async function createCustomers(formdata: FormData) {
     }
 }
 
-export async function getCustomers(): Promise<{ status: number; customers: Customer[] } | undefined> {
+export async function getCustomers(query: string
+): Promise<{ status: number; customers: Customer[] } | undefined> {
     try {
         const db = await connectDB();
         if (db) {

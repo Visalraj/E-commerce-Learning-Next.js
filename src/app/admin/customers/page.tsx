@@ -3,8 +3,15 @@
 import Breadcrumbs from '@/app/ui/admin/components/breadcrumbs';
 import { CreateButton } from '@/app/ui/admin/components/buttons';
 import Customers from '@/app/ui/admin/components/customers-list';
-export default async function Page() {
-
+export default async function Page({
+    searchParams,
+}: {
+    searchParams?: {
+        query?: string;
+        page?: string;
+    };
+}) {
+    const query = searchParams?.query || '';
     return (
         <>
             <main>
@@ -24,7 +31,7 @@ export default async function Page() {
                     {/*<CreateButton name={'Manage Customers'} />*/}
 
                 </div>
-                <Customers />
+                <Customers query={query} />
             </main >
         </>
     )

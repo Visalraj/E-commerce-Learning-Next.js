@@ -4,16 +4,19 @@ import Icon from "../../common/svg-tiles";
 import { ActionButtons } from "./buttons";
 import DeleteCustomer from "./delete-customer";
 import Search from "../../common/search";
-export default async function Customers() {
-
-    const response = await getCustomers();
+export default async function Customers({
+    query,
+}: {
+    query: string;
+}) {
+    const response = await getCustomers(query);
     return (
         <>
             {response && response.status === 200 && (
                 <>
-                    {/* <div className="search-component mt-5">
+                    <div className="search-component mt-5">
                         <Search placeholder="Search here..." />
-                    </div> */}
+                    </div>
                     <div className="table-layout-wrap w-full mt-14 m-auto">
                         <div className="mt-6 flow-root">
                             <div className="inline-block min-w-full align-middle">
