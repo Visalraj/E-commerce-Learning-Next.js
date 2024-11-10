@@ -9,7 +9,6 @@ export default async function Customers({
 }: {
     query: string;
 }) {
-
     const response = await getCustomers(query);
     return (
         <>

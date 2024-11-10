@@ -3,16 +3,17 @@ import Breadcrumbs from '@/app/ui/admin/components/breadcrumbs';
 import { CreateButton } from '@/app/ui/admin/components/buttons';
 import Customers from '@/app/ui/admin/components/customers-list';
 
-export default async function Page({
-    searchParams,
-}: {
-    searchParams?: {
-        query?: string;
-        page?: string;
-    };
-}) {
-
+export default async function Page(
+    props: {
+        searchParams?: Promise<{
+            query?: string;
+            page?: string;
+        }>;
+    }
+) {
+    const searchParams = await props.searchParams;
     const query = (searchParams && searchParams.query) ? searchParams.query : '';
+
     return (
         <>
             <main>
