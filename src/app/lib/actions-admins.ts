@@ -46,7 +46,7 @@ export async function createCustomers(formdata: FormData) {
             try {
                 await Users.create({ firstname, lastname, email, username, password });
                 revalidatePath('/admin/customers');
-                return { status: 200, redirectUrl: process.env.dynamiclink + 'admin/customers/' }
+                return { status: 200, redirectUrl: process.env.NEXT_PUBLIC_BASE_URL + '/admin/customers/' }
 
             } catch (error) {
                 console.log('Unable to create user:', error);
@@ -65,6 +65,7 @@ export async function createCustomers(formdata: FormData) {
 export async function getCustomers(query: string
 ): Promise<{ status: number; customers: Customer[] } | undefined> {
     try {
+
         const db = await connectDB();
         if (db) {
             const customers = await Users.find({}).sort({ createdAt: -1 });

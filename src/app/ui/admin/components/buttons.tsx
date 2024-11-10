@@ -39,7 +39,7 @@ export function ActionButtons({ name, isclicked = false, pointto = '' }: { name:
             </div>
         ),
         Edit: (
-            <Link href={`${process.env.dynamiclink}admin/customers/${pointto}/edit`}>
+            <Link href={`${process.env.NEXT_PUBLIC_BASE_URL}/admin/customers/${pointto}/edit`}>
                 <Icon name="edit" />
             </Link>
         ),
