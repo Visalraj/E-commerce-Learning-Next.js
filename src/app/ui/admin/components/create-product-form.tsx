@@ -5,6 +5,7 @@ import Link from "next/link";
 import { createCustomers } from "@/app/lib/actions-admins";
 import { useRouter } from 'next/navigation';
 import { useState } from "react";
+import Image from "next/image";
 
 export default function ProductsCreateForm() {
     const router = useRouter();
@@ -89,12 +90,11 @@ export default function ProductsCreateForm() {
                         </label>
                         <div className="relative ">
                             <input onChange={productImages} type="file" name="product_file" multiple />
-                            {imgsSrc &&
-                                imgsSrc
-                                    .filter((link): link is string => typeof link === 'string') // Filters to only include strings
-                                    .map((link, index) => (
-                                        <img key={index} src={link} alt={`Uploaded image ${index + 1}`} />
-                                    ))}
+                            <div className="uploaded-images grid grid-cols-2 gap-2">
+                                {imgsSrc && imgsSrc.filter((link): link is string => typeof link === 'string').map((link, index) => (
+                                    <Image width={200} key={index} height={450} src={link} alt={`Uploaded image ${index + 1}`} />
+                                ))}
+                            </div>
 
                         </div>
                         <div id="product-error" aria-live="polite" aria-atomic="true">
