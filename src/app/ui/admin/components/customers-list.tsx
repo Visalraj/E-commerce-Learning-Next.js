@@ -1,15 +1,17 @@
 'use server';
-import { getCustomers } from "@/app/lib/actions-admins";
+
 import Icon from "../../common/svg-tiles";
 import { ActionButtons } from "./buttons";
 import DeleteCustomer from "./delete-customer";
 import Search from "../../common/search";
+import { Customer } from "@/app/lib/definitions";
 export default async function Customers({
-    query,
+    response
 }: {
-    query: string;
-}) {
-    const response = await getCustomers(query);
+    response: { status: number; customers: Customer[] } | undefined;
+}
+) {
+
     return (
         <>
             {response && response.status === 200 && (

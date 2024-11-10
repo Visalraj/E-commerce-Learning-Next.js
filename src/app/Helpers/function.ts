@@ -80,3 +80,45 @@ export async function createUniqueUsername(name: string) {
         console.error('Error generating unique username:', error);
     }
 }
+
+export const generatePagination = async (currentPage: number, totalPages: number): Promise<(number | string)[]> => {
+    return new Promise((resolve, reject) => {
+        try {
+            // If the total number of pages is 7 or less,
+            // display all pages without any ellipsis.
+            if (totalPages <= 7) {
+                resolve(Array.from({ length: totalPages }, (_, i) => i + 1));
+                return;
+            }
+
+            // If the current page is among the first 3 pages,
+            // show the first 3, an ellipsis, and the last 2 pages.
+            if (currentPage <= 3) {
+                resolve([1, 2, 3, '...', totalPages - 1, totalPages]);
+                return;
+            }
+
+            // If the current page is among the last 3 pages,
+            // show the first 2, an ellipsis, and the last 3 pages.
+            if (currentPage >= totalPages - 2) {
+                resolve([1, 2, '...', totalPages - 2, totalPages - 1, totalPages]);
+                return;
+            }
+
+            // If the current page is somewhere in the middle,
+            // show the first page, an ellipsis, the current page and its neighbors,
+            // another ellipsis, and the last page.
+            resolve([
+                1,
+                '...',
+                currentPage - 1,
+                currentPage,
+                currentPage + 1,
+                '...',
+                totalPages,
+            ]);
+        } catch (error) {
+            reject(error);
+        }
+    });
+};

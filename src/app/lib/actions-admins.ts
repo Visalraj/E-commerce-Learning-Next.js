@@ -62,20 +62,36 @@ export async function createCustomers(formdata: FormData) {
     }
 }
 
-export async function getCustomers(query: string): Promise<{ status: number; customers: Customer[] } | undefined> {
+export async function getCustomers(
+    query: string,
+    currentPage: number
+): Promise<{ status: number; customers: Customer[]; totalPages: number } | undefined> {
     try {
         const db = await connectDB();
         if (db) {
+            const ITEMS_PER_PAGE = 5;
+            const offset = (currentPage - 1) * ITEMS_PER_PAGE;
             const searchQuery = new RegExp(query, 'i');
+
+            const totalCount = await Users.countDocuments({
+                $or: [
+                    { firstname: { $regex: searchQuery } },
+                    { lastname: { $regex: searchQuery } },
+                    { email: { $regex: searchQuery } },
+                    { username: { $regex: searchQuery } },
+                ],
+            });
+
             const customers = await Users.find({
                 $or: [
                     { firstname: { $regex: searchQuery } },
                     { lastname: { $regex: searchQuery } },
                     { email: { $regex: searchQuery } },
                     { username: { $regex: searchQuery } },
-
                 ],
-            }).sort({ createdAt: -1 });
+            }).sort({ createdAt: -1 })
+                .skip(offset)
+                .limit(ITEMS_PER_PAGE);
 
             if (customers.length > 0) {
                 const serializedCustomers: Customer[] = await Promise.all(customers.map(async customer => ({
@@ -89,17 +105,20 @@ export async function getCustomers(query: string): Promise<{ status: number; cus
                     createdAt: await formatTime(customer.createdAt.toISOString()),
                     updatedAt: customer.updatedAt.toISOString(),
                 })));
-                return { status: 200, customers: serializedCustomers };
+
+                const totalPages = Math.ceil(totalCount / ITEMS_PER_PAGE);
+                return { status: 200, customers: serializedCustomers, totalPages };
             } else {
-                return { status: 200, customers: [] };
+                return { status: 200, customers: [], totalPages: 0 };
             }
         } else {
-            return { status: 500, customers: [] };
+            return { status: 500, customers: [], totalPages: 0 };
         }
     } catch (error) {
         console.log('Something error occurred', error);
     }
 }
+
 
 
 const UpdateCustomerSchema = FormSchema.omit({ id: true, firstname: true, email: true, lastname: true });
@@ -133,6 +152,7 @@ export async function updateCustomerById(id: string, formData: FormData) {
     }
 
 }
+
 export async function getCustomerById({ id }: { id: string }) {
     const objectId = new mongoose.Types.ObjectId(id);
     const customerObject = await Users.find({ _id: objectId });
