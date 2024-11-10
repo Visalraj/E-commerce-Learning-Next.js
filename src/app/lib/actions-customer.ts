@@ -64,12 +64,12 @@ export async function createCustomer(formData: FormData) {
                 username: username
             });
             console.log('User created successfully');
-            return { status: 200, redirectUrl: process.env.dynamiclink + 'login' }
+            return { status: 200, redirectUrl: process.env.NEXT_PUBLIC_BASE_URL + '/login' }
         } else {
-            return { status: 500, redirectUrl: `${process.env.dynamiclink}` };
+            return { status: 500, redirectUrl: `${process.env.NEXT_PUBLIC_BASE_URL}` };
         }
     } catch (error) {
         console.log('Error during user creation or DB connection:', error);
-        return { status: 500, redirectUrl: `${process.env.dynamiclink}` };
+        return { status: 500, redirectUrl: `${process.env.NEXT_PUBLIC_BASE_URL}` };
     }
 }

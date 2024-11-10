@@ -46,7 +46,7 @@ export async function createCustomers(formdata: FormData) {
             try {
                 await Users.create({ firstname, lastname, email, username, password });
                 revalidatePath('/admin/customers');
-                return { status: 200, redirectUrl: process.env.dynamiclink + 'admin/customers/' }
+                return { status: 200, redirectUrl: process.env.NEXT_PUBLIC_BASE_URL + '/admin/customers/' }
 
             } catch (error) {
                 console.log('Unable to create user:', error);
@@ -62,12 +62,22 @@ export async function createCustomers(formdata: FormData) {
     }
 }
 
-export async function getCustomers(): Promise<{ status: number; customers: Customer[] } | undefined> {
+export async function getCustomers(query: string): Promise<{ status: number; customers: Customer[] } | undefined> {
     try {
         const db = await connectDB();
         if (db) {
-            const customers = await Users.find({}).sort({ createdAt: -1 });
-            if (customers.length >= 0) {
+            const searchQuery = new RegExp(query, 'i');
+            const customers = await Users.find({
+                $or: [
+                    { firstname: { $regex: searchQuery } },
+                    { lastname: { $regex: searchQuery } },
+                    { email: { $regex: searchQuery } },
+                    { username: { $regex: searchQuery } },
+
+                ],
+            }).sort({ createdAt: -1 });
+
+            if (customers.length > 0) {
                 const serializedCustomers: Customer[] = await Promise.all(customers.map(async customer => ({
                     _id: customer._id.toString(),
                     firstname: customer.firstname,
@@ -87,9 +97,10 @@ export async function getCustomers(): Promise<{ status: number; customers: Custo
             return { status: 500, customers: [] };
         }
     } catch (error) {
-        console.log('Something error occured', error);
+        console.log('Something error occurred', error);
     }
 }
+
 
 const UpdateCustomerSchema = FormSchema.omit({ id: true, firstname: true, email: true, lastname: true });
 
