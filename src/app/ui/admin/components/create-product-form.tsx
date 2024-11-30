@@ -2,7 +2,7 @@
 'use client';
 import { ActionButtons } from "./buttons";
 import Link from "next/link";
-import { createCustomers } from "@/app/lib/actions-admins";
+import { createProducts } from "@/app/lib/actions-admins";
 import { useRouter } from 'next/navigation';
 import { useState } from "react";
 import Image from "next/image";
@@ -17,11 +17,7 @@ export default function ProductsCreateForm() {
         const formData = new FormData(event.currentTarget);
 
         try {
-            const result = await createCustomers(formData);
-            if (result.status && result.status === 200 && result.redirectUrl != '') {
-                setIsClicked(false);
-                router.push(result.redirectUrl!);
-            }
+            const result = await createProducts(formData);
         } catch (error) {
             console.log(error);
         }
@@ -88,15 +84,27 @@ export default function ProductsCreateForm() {
                         <label htmlFor="product price" className="mb-2 block text-sm font-medium">
                             Product Images
                         </label>
-                        <div className="relative ">
-                            <input onChange={productImages} type="file" name="product_file" multiple />
+                        <div className="relative">
+                            <input onChange={productImages} type="file" accept="image/*" name="product_file" multiple />
                             <div className="uploaded-images grid grid-cols-2 gap-2">
-                                {imgsSrc && imgsSrc.filter((link): link is string => typeof link === 'string').map((link, index) => (
-                                    <Image width={200} key={index} height={450} src={link} alt={`Uploaded image ${index + 1}`} />
-                                ))}
+                                {imgsSrc &&
+                                    imgsSrc
+                                        .filter((link): link is string => typeof link === 'string')
+                                        .map((link, index) => (
+                                            <Image
+                                                key={index}
+                                                width={200}
+                                                height={450}
+                                                src={link}
+                                                alt={`Uploaded image ${index + 1}`}
+                                            />
+                                        ))}
                             </div>
-
+                            <input type="hidden" name="product_images" value={imgsSrc
+                                ?.filter((link): link is string => typeof link === 'string')
+                                .join(',')} />
                         </div>
+
                         <div id="product-error" aria-live="polite" aria-atomic="true">
                         </div>
                     </div>

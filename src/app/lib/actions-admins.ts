@@ -188,3 +188,25 @@ export async function deleteCustomerById(id: string) {
         console.log('error on deleting customer: ' + error)
     }
 }
+
+/* Products  */
+
+const ProductsFormSchema = z.object({
+    id: z.string(),
+    product_name: z.string().min(1),
+    product_desc: z.string().min(1),
+    product_price: z.string().min(1),
+
+});
+
+const CreateProducts = ProductsFormSchema.omit({ id: true });
+
+export async function createProducts(formdata: FormData) {
+    try {
+        console.log(formdata);
+
+    } catch (e) {
+        console.error('Validation Error:', e);
+        return { status: 400, message: 'Validation Error' };
+    }
+}
