@@ -2,12 +2,12 @@
 import Breadcrumbs from '@/app/ui/admin/components/breadcrumbs';
 import { CreateButton } from '@/app/ui/admin/components/buttons';
 export default async function Page(
-    props: {
+    /*props: {
         searchParams?: Promise<{
             query?: string;
             page?: string;
         }>
-    }
+    }*/
 ) {
     return (
         <>

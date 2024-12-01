@@ -8,6 +8,7 @@ import { revalidatePath } from 'next/cache';
 import { Customer } from './definitions';
 import mongoose from "mongoose";
 import { redirect } from 'next/navigation';
+import ProductImages from '@/models/product-images';
 
 
 enum Status {
@@ -218,11 +219,16 @@ export async function createProducts(formdata: FormData) {
                 const product = await Products.create({
                     product_name,
                     product_desc,
-                    product_price: price, // Store the price as a number
+                    product_price: price,
                 });
                 console.log("Created Product ID:", product._id);
-                // revalidatePath('/admin/products');
-                // return { status: 200, redirectUrl: process.env.NEXT_PUBLIC_BASE_URL + '/admin/products/' }
+                const uploadedImages = formdata.getAll('uploaded_images[]');
+                if (uploadedImages.length > 0) {
+                    const createdPimageId = await ProductImages.create({ product_id: product._id, images: uploadedImages });
+                    console.log("Created Product Image Id: " + createdPimageId._id)
+                }
+                revalidatePath('/admin/products');
+                return { status: 200, redirectUrl: process.env.NEXT_PUBLIC_BASE_URL + '/admin/products/' }
             }
         } catch (error) {
             console.error("Database Error:", error);
@@ -230,16 +236,9 @@ export async function createProducts(formdata: FormData) {
         }
 
         // Handle uploaded images
-        const uploadedImages = formdata.getAll('uploaded_images[]');
-        if (uploadedImages.length > 0) {
-            console.log("Uploaded images count:", uploadedImages.length);
-            // Process the images as needed (e.g., store them in a separate collection or S3)
-        } else {
-            console.log("No images uploaded.");
-        }
 
-    } catch (e) {
-        console.error('Validation Error:', e);
-        return { status: 400, message: 'Validation Error: ' + e.message };
+
+    } catch (error) {
+        console.error('Validation Error:', error);
     }
 }
