@@ -204,7 +204,7 @@ const CreateProducts = ProductsFormSchema.omit({ id: true });
 export async function createProducts(formdata: FormData) {
     try {
         console.log(formdata);
-
+        return;
     } catch (e) {
         console.error('Validation Error:', e);
         return { status: 400, message: 'Validation Error' };
