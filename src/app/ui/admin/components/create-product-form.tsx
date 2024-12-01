@@ -5,16 +5,19 @@ import Link from "next/link";
 import { createProducts } from "@/app/lib/actions-admins";
 import { useState } from "react";
 import UploadWiget from "../../common/upload-images";
+import { useRouter } from "next/navigation";
 
 export default function ProductsCreateForm() {
     const [isClicked, setIsClicked] = useState(false);
+    const router = useRouter();
     const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
         setIsClicked(true);
         const formData = new FormData(event.currentTarget);
-
         try {
             const result = await createProducts(formData);
+            if (result && result.status == 200)
+                router.push(result.redirectUrl!)
         } catch (error) {
             console.log(error);
         }

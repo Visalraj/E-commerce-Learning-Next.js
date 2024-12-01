@@ -1,15 +1,16 @@
 'use client';
 import { useState } from 'react';
-import { CldUploadWidget } from 'next-cloudinary';
+import { CldUploadWidget, CloudinaryUploadWidgetResults } from 'next-cloudinary';
+
 
 export default function UploadWidget({ label, fn }: { label: string; fn: () => boolean }) {
     const [uploadedImages, setUploadedImages] = useState<string[]>([]);
 
-    const handleUpload = (result: any) => {
-        if (result.event === 'success') {
+    const handleUpload = (result: CloudinaryUploadWidgetResults) => {
+        if (result.event === 'success' && typeof result.info !== 'string' && result.info?.secure_url) {
             const imageUrlFromBucket = result.info.secure_url.trim().split('/');
-            const dbUrl = imageUrlFromBucket[6] + '/' + imageUrlFromBucket[7];
-            setUploadedImages((prev) => [...prev, dbUrl]); // Add the image URL to the state
+            const dbUrl = `${imageUrlFromBucket[6]}/${imageUrlFromBucket[7]}`;
+            setUploadedImages((prev) => [...prev, dbUrl]);
         }
     };
 
@@ -25,10 +26,9 @@ export default function UploadWidget({ label, fn }: { label: string; fn: () => b
                         multiple: true,
                         clientAllowedFormats: ['image', 'video'],
                     }}
-                    onSuccess={(result) => {
-                        if (result.event === 'success') {
-                            handleUpload(result);
-                        }
+                    onSuccess={(result: CloudinaryUploadWidgetResults) => {
+                        if (result.event) handleUpload(result);
+                        else console.warn('Upload event is undefined.');
                     }}
                 >
                     {({ open }) => (
@@ -46,14 +46,16 @@ export default function UploadWidget({ label, fn }: { label: string; fn: () => b
             </div>
 
             {/* Render hidden fields for each uploaded image */}
-            {uploadedImages.map((imageUrl, index) => (
-                <input
-                    key={index}
-                    type="hidden"
-                    name={`uploaded_images[]`}
-                    value={imageUrl}
-                />
-            ))}
-        </div>
+            {
+                uploadedImages.map((imageUrl, index) => (
+                    <input
+                        key={index}
+                        type="hidden"
+                        name={`uploaded_images[]`}
+                        value={imageUrl}
+                    />
+                ))
+            }
+        </div >
     );
 }
