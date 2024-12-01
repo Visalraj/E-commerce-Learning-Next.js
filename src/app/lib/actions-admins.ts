@@ -2,6 +2,7 @@
 import { z } from 'zod';
 import connectDB from '@/library/db';
 import Users from '@/models/users';
+import Products from '@/models/products';
 import { decryptString, generateRandomString, encryptString, formatTime, createUniqueUsername } from '../Helpers/function';
 import { revalidatePath } from 'next/cache';
 import { Customer } from './definitions';
@@ -196,17 +197,49 @@ const ProductsFormSchema = z.object({
     product_name: z.string().min(1),
     product_desc: z.string().min(1),
     product_price: z.string().min(1),
-
 });
 
 const CreateProducts = ProductsFormSchema.omit({ id: true });
 
 export async function createProducts(formdata: FormData) {
     try {
-        console.log(formdata);
-        return;
+        const { product_name, product_desc, product_price } = CreateProducts.parse({
+            product_name: formdata.get('product_name'),
+            product_desc: formdata.get('product_description'),
+            product_price: formdata.get('product_price'),
+        });
+        const price = parseFloat(product_price);
+
+        if (isNaN(price)) {
+            throw new Error('Invalid product price');
+        }
+        try {
+            if (await connectDB()) {
+                const product = await Products.create({
+                    product_name,
+                    product_desc,
+                    product_price: price, // Store the price as a number
+                });
+                console.log("Created Product ID:", product._id);
+                // revalidatePath('/admin/products');
+                // return { status: 200, redirectUrl: process.env.NEXT_PUBLIC_BASE_URL + '/admin/products/' }
+            }
+        } catch (error) {
+            console.error("Database Error:", error);
+            return { status: 500, message: 'Database error during product creation' };
+        }
+
+        // Handle uploaded images
+        const uploadedImages = formdata.getAll('uploaded_images[]');
+        if (uploadedImages.length > 0) {
+            console.log("Uploaded images count:", uploadedImages.length);
+            // Process the images as needed (e.g., store them in a separate collection or S3)
+        } else {
+            console.log("No images uploaded.");
+        }
+
     } catch (e) {
         console.error('Validation Error:', e);
-        return { status: 400, message: 'Validation Error' };
+        return { status: 400, message: 'Validation Error: ' + e.message };
     }
 }
