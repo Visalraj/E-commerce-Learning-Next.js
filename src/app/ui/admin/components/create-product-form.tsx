@@ -19,6 +19,24 @@ export default function ProductsCreateForm() {
             console.log(error);
         }
     }
+
+    const [formValues, setFormValues] = useState<{ [key: string]: string }>({
+        name: '',
+        price: '',
+        description: ''
+    });
+
+    const areAllFieldsFilled = () => {
+        return Object.values(formValues).every((value) => value.trim() !== '');
+    };
+
+    const handleFieldChange = (field: string, value: string) => {
+        setFormValues((prev) => ({
+            ...prev,
+            [field]: value,
+        }));
+    };
+
     return (
         <form onSubmit={handleSubmit} method="POST" autoComplete="off" className="w-7/12 m-auto mt-5">
             <div className="rounded-md bg-gray-300 p-4 md:p-6 ">
@@ -29,7 +47,8 @@ export default function ProductsCreateForm() {
                             Product Name
                         </label>
                         <div className="relative ">
-                            <input type="text" name="product_name" className="w-8/12 h-9 rounded-md focus:outline-none p-2" />
+                            <input type="text" name="product_name" className="w-8/12 h-9 rounded-md focus:outline-none p-2" value={formValues.name}
+                                onChange={(e) => handleFieldChange('name', e.target.value)} />
                             <div id="product-error" aria-live="polite" aria-atomic="true"></div>
                         </div>
                         <div id="product-error" aria-live="polite" aria-atomic="true">
@@ -40,7 +59,8 @@ export default function ProductsCreateForm() {
                             Product Description
                         </label>
                         <div className="relative ">
-                            <textarea name="product_description" className="w-8/12 h-9 rounded-md focus:outline-none p-2" />
+                            <textarea name="product_description" className="w-8/12 h-9 rounded-md focus:outline-none p-2" value={formValues.description}
+                                onChange={(e) => handleFieldChange('description', e.target.value)} />
                         </div>
                         <div id="product-error" aria-live="polite" aria-atomic="true">
                         </div>
@@ -50,12 +70,13 @@ export default function ProductsCreateForm() {
                             Product Price
                         </label>
                         <div className="relative ">
-                            <input type="text" name="product_price" className="w-8/12 h-9 rounded-md focus:outline-none p-2" />
+                            <input type="text" name="product_price" className="w-8/12 h-9 rounded-md focus:outline-none p-2" value={formValues.price}
+                                onChange={(e) => handleFieldChange('price', e.target.value)} />
                         </div>
                         <div id="product-error" aria-live="polite" aria-atomic="true">
                         </div>
                     </div>
-                    <UploadWiget label={"Upload Product Images"} />
+                    <UploadWiget label={"Upload Product Images"} fn={areAllFieldsFilled} />
                 </div>
                 <div className="mt-6 flex justify-end gap-4">
                     <Link
