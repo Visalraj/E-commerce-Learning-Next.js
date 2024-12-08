@@ -3,8 +3,20 @@ import Search from "./search";
 import { ActionButtons } from "../admin/components/buttons";
 import DeleteCustomer from "../admin/components/delete-customer";
 import Icon from "./svg-tiles";
+import { Customer } from "@/app/lib/definitions";
+interface EntityTypes {
+    customers: Customer;
+}
 
-export default async function Entities({ label, entity, type }: { label: string[], entity: any[], type: string }) {
+export default async function Entities<T extends keyof EntityTypes>({
+    label,
+    entity,
+    type,
+}: {
+    label: string[];
+    entity: EntityTypes[T][];
+    type: T;
+}) {
     return (
         <>
             <div className="search-component mt-5">
@@ -18,8 +30,8 @@ export default async function Entities({ label, entity, type }: { label: string[
                                 <thead className="rounded-lg text-left text-sm font-normal">
                                     <tr>
                                         {
-                                            label && label.map((item) =>
-                                                <th scope="col" className="px-4 py-5 font-medium sm:pl-6">
+                                            label && label.map((item, index) =>
+                                                <th key={index} scope="col" className="px-4 py-5 font-medium sm:pl-6">
                                                     {item}
                                                 </th>
                                             )
