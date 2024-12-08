@@ -44,8 +44,6 @@ export default function UploadWidget({ label, fn }: { label: string; fn: () => b
                     )}
                 </CldUploadWidget>
             </div>
-
-            {/* Render hidden fields for each uploaded image */}
             {
                 uploadedImages.map((imageUrl, index) => (
                     <input
