@@ -67,7 +67,7 @@ export async function createCustomers(formdata: FormData) {
 export async function getCustomers(
     query: string,
     currentPage: number
-): Promise<{ status: number; customers: Customer[]; totalPages: number } | undefined> {
+): Promise<{ status: number; entities: Customer[]; totalPages: number } | undefined> {
     try {
         const db = await connectDB();
         if (db) {
@@ -109,12 +109,12 @@ export async function getCustomers(
                 })));
 
                 const totalPages = Math.ceil(totalCount / ITEMS_PER_PAGE);
-                return { status: 200, customers: serializedCustomers, totalPages };
+                return { status: 200, entities: serializedCustomers, totalPages };
             } else {
-                return { status: 200, customers: [], totalPages: 0 };
+                return { status: 200, entities: [], totalPages: 0 };
             }
         } else {
-            return { status: 500, customers: [], totalPages: 0 };
+            return { status: 500, entities: [], totalPages: 0 };
         }
     } catch (error) {
         console.log('Something error occurred', error);
@@ -242,7 +242,7 @@ export async function createProducts(formdata: FormData) {
 export async function getProducts(
     query: string,
     currentPage: number
-): Promise<{ status: number; products: Products_schema[]; totalPages: number } | undefined> {
+): Promise<{ status: number; entities: Products_schema[]; totalPages: number } | undefined> {
     try {
         const db = await connectDB();
         if (db) {
@@ -283,12 +283,12 @@ export async function getProducts(
                 })));
 
                 const totalPages = Math.ceil(totalCount / ITEMS_PER_PAGE);
-                return { status: 200, products: serializedProducts, totalPages };
+                return { status: 200, entities: serializedProducts, totalPages };
             } else {
-                return { status: 200, products: [], totalPages: 0 };
+                return { status: 200, entities: [], totalPages: 0 };
             }
         } else {
-            return { status: 500, products: [], totalPages: 0 };
+            return { status: 500, entities: [], totalPages: 0 };
         }
     } catch (error) {
         console.log('Something error occurred', error);

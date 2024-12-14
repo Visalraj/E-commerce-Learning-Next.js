@@ -2,6 +2,8 @@
 import { getProducts } from '@/app/lib/actions-admins';
 import Breadcrumbs from '@/app/ui/admin/components/breadcrumbs';
 import { CreateButton } from '@/app/ui/admin/components/buttons';
+import EntitiesList from '@/app/ui/admin/components/entities-list';
+import Pagination from '@/app/ui/common/pagination';
 export default async function Page(
     props: {
         searchParams?: Promise<{
@@ -14,7 +16,7 @@ export default async function Page(
     const query = (searchParams && searchParams.query) ? searchParams.query : '';
     const currentPage = Number(searchParams?.page) || 1;
     const response = await getProducts(query, currentPage);
-    console.log(response);
+    const totalPages = response?.totalPages || 0;
     return (
         <>
             <main>
@@ -31,7 +33,10 @@ export default async function Page(
                 <div className="parentwrapbtns flex">
                     <CreateButton name="Add Products" pointto="/admin/products/create" />
                 </div>
-
+                <EntitiesList response={response} type={`products`} />
+                <div className="mt-5 flex w-full justify-center">
+                    <Pagination totalPages={totalPages} />
+                </div>
             </main>
         </>
     )
