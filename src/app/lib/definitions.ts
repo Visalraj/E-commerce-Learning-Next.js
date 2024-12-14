@@ -10,7 +10,7 @@ export type Customer = {
     updatedAt: string;
 };
 
-export type Products = {
+export type Products_schema = {
     _id: string;
     product_name: string;
     product_desc: string;

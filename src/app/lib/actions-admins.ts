@@ -5,7 +5,7 @@ import Users from '@/models/users';
 import Products from '@/models/products';
 import { decryptString, generateRandomString, encryptString, formatTime, createUniqueUsername } from '../Helpers/function';
 import { revalidatePath } from 'next/cache';
-import { Customer } from './definitions';
+import { Customer, Products_schema } from './definitions';
 import mongoose from "mongoose";
 import { redirect } from 'next/navigation';
 import ProductImages from '@/models/product-images';
@@ -235,10 +235,62 @@ export async function createProducts(formdata: FormData) {
             return { status: 500, message: 'Database error during product creation' };
         }
 
-        // Handle uploaded images
-
-
     } catch (error) {
         console.error('Validation Error:', error);
+    }
+}
+export async function getProducts(
+    query: string,
+    currentPage: number
+): Promise<{ status: number; products: Products_schema[]; totalPages: number } | undefined> {
+    try {
+        const db = await connectDB();
+        if (db) {
+            const ITEMS_PER_PAGE = 5;
+            const offset = (currentPage - 1) * ITEMS_PER_PAGE;
+            const searchQuery = new RegExp(query, 'i');
+            const isNumeric = !isNaN(Number(query));
+            const numericQuery = isNumeric ? Number(query) : null;
+
+            const totalCount = await Products.countDocuments({
+                $or: [
+                    { product_name: { $regex: searchQuery } },
+                    { product_desc: { $regex: searchQuery } },
+                    ...(isNumeric ? [{ product_price: numericQuery }] : []),
+                ],
+            });
+
+
+            const products = await Products.find({
+                $or: [
+                    { product_name: { $regex: searchQuery } },
+                    { product_desc: { $regex: searchQuery } },
+                    ...(isNumeric ? [{ product_price: numericQuery }] : []),
+                ],
+            }).sort({ createdAt: -1 })
+                .skip(offset)
+                .limit(ITEMS_PER_PAGE);
+
+            if (products.length > 0) {
+                const serializedProducts: Products_schema[] = await Promise.all(products.map(async product => ({
+                    _id: product._id.toString(),
+                    product_name: product.product_name,
+                    product_desc: product.product_desc,
+                    product_price: product.product_price,
+                    isActive: product.isActive,
+                    createdAt: await formatTime(product.createdAt.toISOString()),
+                    updatedAt: product.updatedAt.toISOString(),
+                })));
+
+                const totalPages = Math.ceil(totalCount / ITEMS_PER_PAGE);
+                return { status: 200, products: serializedProducts, totalPages };
+            } else {
+                return { status: 200, products: [], totalPages: 0 };
+            }
+        } else {
+            return { status: 500, products: [], totalPages: 0 };
+        }
+    } catch (error) {
+        console.log('Something error occurred', error);
     }
 }
