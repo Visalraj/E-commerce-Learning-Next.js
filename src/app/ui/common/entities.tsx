@@ -3,6 +3,7 @@ import Search from "./search";
 import { ActionButtons } from "../admin/components/buttons";
 import Icon from "./svg-tiles";
 import { Customer, Products_schema } from "@/app/lib/definitions";
+import DeleteCustomer from "../admin/components/delete-customer";
 
 type EntityMap = {
     customers: Customer;
@@ -65,9 +66,32 @@ export default async function Entities<T extends keyof EntityMap>({
                                             )}
                                             <td className="whitespace-nowrap px-3 py-3">{item.createdAt}</td>
                                             <td className="whitespace-nowrap px-3 py-3 flex">
-                                                <span className="pl-3">
-                                                    <ActionButtons name="Edit" isclicked={false} pointto={item._id} />
-                                                </span>
+                                                {
+                                                    type == 'products' && (
+                                                        <span className="pl-3">
+                                                            <ActionButtons name="Edit" isclicked={false}
+                                                                pointto={`${process.env.NEXT_PUBLIC_BASE_URL}/admin/products/${item._id}/edit`}
+                                                            />
+                                                        </span>
+                                                    )
+                                                }
+                                                {
+                                                    type == 'customers' && (
+                                                        <>
+                                                            <span className="pl-3">
+                                                                <ActionButtons name="Edit" isclicked={false}
+                                                                    pointto={`${process.env.NEXT_PUBLIC_BASE_URL}/admin/products/${item._id}/edit`}
+                                                                />
+                                                            </span>
+                                                            <span className="pl-3">
+                                                                <DeleteCustomer id={item._id} />
+                                                            </span>
+                                                        </>
+                                                    )
+                                                }
+
+
+
                                             </td>
                                             {type === 'customers' && (
                                                 <td className="whitespace-nowrap px-3 py-3">
